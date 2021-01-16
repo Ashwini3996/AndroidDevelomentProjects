@@ -1,0 +1,193 @@
+//CoustomAdapter
+(to create an our own layout and if we want to add an extra imageview and textview into the ListView then we use CoustomAdaptor extending BaseAdaptor and this we set imageView and textView into the ListView)
+
+//activity_list_view_demo.xml(main_activity.xml)
+
+
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    tools:context="com.example.ashwinipalve.testapp.activity.ListViewDemoActivity">
+
+    <ListView
+        android:id="@+id/list_item"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+    </ListView>
+</LinearLayout>
+
+
+
+
+//ListViewActivity.java(this is activity)
+
+package com.example.ashwinipalve.testapp.activity;
+
+import android.content.Context;
+import android.support.v7.app.AppCompatActivity;
+import android.os.Bundle;
+import android.view.View;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
+import android.widget.ListView;
+import android.widget.Toast;
+
+import com.example.ashwinipalve.testapp.R;
+
+import java.util.ArrayList;
+
+public class ListViewDemoActivity extends AppCompatActivity {
+
+
+    Context context;
+    ArrayList mobileArrayList;
+    ListView listView;
+
+    public static int [] prgmImages ={R.drawable.ic_looks_one,R.drawable.ic_looks_two,
+                                      R.drawable.ic_looks_one,R.drawable.ic_looks_two,
+                                      R.drawable.ic_looks_one,R.drawable.ic_looks_two,
+                                      R.drawable.ic_looks_one,R.drawable.ic_looks_two,};
+
+    public static String[] mobileArray = {"Android","IPhone","WindowsMobile","Blackberry",
+                                   "WebOS","Ubuntu","Windows7","Max OS X"};
+
+
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_list_view_demo);
+
+
+     CustomAdapter adapter=new CustomAdapter(this,mobileArray,prgmImages);
+        listView =  findViewById(R.id.list_item);
+        listView.setAdapter(adapter);
+        adapter.notifyDataSetChanged();
+
+        listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> adapterView, View view, int position, long id) {
+                Toast.makeText(ListViewDemoActivity.this,"U Clicked:"+ mobileArray[position],Toast.LENGTH_SHORT).show();
+
+            }
+        });
+
+
+    }
+}
+
+
+
+
+
+
+
+//programlist.xml(here we added extra imageview and textview)
+
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="horizontal" >
+
+
+    <ImageView
+        android:id="@+id/imageView1"
+        android:layout_gravity="center"
+        android:layout_width="48dp"
+        android:layout_height="48dp"
+       android:src="@drawable/ic_looks_one"
+        />
+
+    <TextView
+        android:id="@+id/textView1"
+        android:layout_gravity="center"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textSize="25dp"
+        android:text="TextView" />
+
+</LinearLayout>
+
+
+
+
+
+
+//CustomAdaptor.java(this is an class here we write our own adaptor extending BaseAdaptor)
+
+package com.example.ashwinipalve.testapp.activity;
+
+import android.app.Activity;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
+import android.util.Base64;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.ViewGroup;
+import android.widget.ArrayAdapter;
+import android.widget.BaseAdapter;
+import android.widget.ImageView;
+import android.widget.TextView;
+
+import com.example.ashwinipalve.testapp.R;
+
+/**
+ * Created by Ashwini Palve on 15/01/2018.
+ */
+
+public class CustomAdapter extends BaseAdapter
+{   private final Activity context;
+    private final String[] mobileArray;
+     private final int[]  prgmImages;
+
+    public CustomAdapter(Activity context, String[] mobileArray, int[] prgmImages) {
+        this.context = context;
+        this.mobileArray = mobileArray;
+        this.prgmImages = prgmImages;
+    }
+
+
+    @Override
+    public int getCount() {
+        return mobileArray.length;
+    }
+
+
+    @Override
+    public Object getItem(int position) {
+        return position;
+    }
+
+    @Override
+    public long getItemId(int position) {
+        return position;
+    }
+
+    @NonNull
+    @Override
+    public View getView(int position, @Nullable View convertView, @NonNull ViewGroup parent) {
+
+
+
+        LayoutInflater inflater=LayoutInflater.from(context);
+        View rowView=inflater.inflate(R.layout.progrmlist,null);
+
+        //to set the text and image into the inflater
+
+        TextView textView=rowView.findViewById(R.id.textView1);
+        ImageView imageView=rowView.findViewById(R.id.imageView1);
+
+        textView.setText(mobileArray[position]);
+        imageView.setImageResource(prgmImages[position]);
+
+        return rowView;
+    }
+}
+

@@ -1,0 +1,336 @@
+package com.example.ashwinipalve.mylistview.activity;
+
+import android.content.Intent;
+import android.support.v7.app.AppCompatActivity;
+import android.os.Bundle;
+import android.util.Log;
+import android.view.View;
+import android.widget.Button;
+import android.widget.EditText;
+import android.widget.Toast;
+
+import com.android.volley.Request;
+import com.android.volley.RequestQueue;
+import com.android.volley.Response;
+import com.android.volley.VolleyError;
+import com.android.volley.toolbox.JsonObjectRequest;
+import com.android.volley.toolbox.Volley;
+import com.example.ashwinipalve.mylistview.R;
+import com.example.ashwinipalve.mylistview.pojo.WebSiteDetailsPojo;
+import com.example.ashwinipalve.mylistview.pojo.WebSiteDetailsPojo1;
+import com.example.ashwinipalve.mylistview.support.EndPoint;
+import com.example.ashwinipalve.mylistview.support.SharedPrefrencesHelper;
+import com.google.gson.Gson;
+
+import org.json.JSONObject;
+
+import java.util.ArrayList;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
+public class WebSiteDetailsActivity extends AppCompatActivity  implements View.OnClickListener
+{
+
+   private EditText edit_Wtype ,edit_Wdisc,edit_domainName,edit_OwnerName,edit_OwnerMob,edit_OwnerState,edit_OwnerCity,edit_OwnerAddr,edit_OwnerEmail;
+    private Button f_btn;
+    String mWtype,mWdisc,mDomainName,mOwnerName,mOwnerMob,mOwnerState,mOwnerCity,mOwnerAddr,mOwnerEmail;
+
+    ArrayList<WebSiteDetailsPojo> arrayList;
+
+   String  json;
+
+
+    private RequestQueue queue;
+
+
+    @Override
+
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.web_site_details);
+
+        //getSupportActionBar().hide();
+
+       //Toolbar myToolbar =findViewById(R.id.my_toolbar);
+       // setSupportActionBar(myToolbar);
+
+
+        arrayList =new ArrayList<>();
+
+        edit_Wtype=findViewById(R.id.edit_Wtype);
+        edit_Wdisc=findViewById(R.id.edit_Wdisc);
+        edit_domainName=findViewById(R.id.edit_domainName);
+        edit_OwnerName =findViewById(R.id.edit_OwnerName);
+        edit_OwnerMob =findViewById(R.id.edit_OwnerMob);
+        edit_OwnerState =findViewById(R.id.edit_OwnerState);
+
+        edit_OwnerCity =findViewById(R.id.edit_OwnerCity);
+        edit_OwnerAddr=findViewById(R.id.edit_OwnerAddr);
+        edit_OwnerEmail=findViewById(R.id.edit_OwnerEmail);
+
+        f_btn=findViewById(R.id.f_btn);
+        f_btn.setOnClickListener(this);
+
+
+
+
+
+        init();
+
+    }
+
+
+    private void init()
+    {
+        queue= Volley.newRequestQueue(this);
+    }
+
+    private void makeNetCall()
+    {
+
+
+        String url= EndPoint.REG_URL+"?json_string="+json;
+        Log.d("url",url);
+
+
+        JsonObjectRequest jsObjRequest = new JsonObjectRequest
+                (Request.Method.GET, url, null, new Response.Listener<JSONObject>() {
+
+                    @Override
+                    public void onResponse(JSONObject response)
+                    {
+                        Log.d("Details", response.toString());
+
+                      Gson gson=new Gson();
+                        WebSiteDetailsPojo1 pojo=gson.fromJson(response.toString(),WebSiteDetailsPojo1.class);
+
+                         Log.d("res",pojo.getMsg());
+                         Log.d("res",pojo.getResponse());
+
+                        if(pojo.getResponse().equals("200"))
+                        {
+                            Toast.makeText(WebSiteDetailsActivity.this, ""+pojo.getMsg(), Toast.LENGTH_LONG).show();
+                            Intent intent = new Intent(WebSiteDetailsActivity.this, AgentInfoActivity.class);
+                            startActivity(intent);
+                        }
+
+
+
+                        else if(pojo.getResponse().equals("400"))
+                        {
+                            Toast.makeText(WebSiteDetailsActivity.this, ""+pojo.getMsg(), Toast.LENGTH_LONG).show();
+                        }
+
+
+                        else if(pojo.getResponse().equals("500"))
+                        {
+                            Toast.makeText(WebSiteDetailsActivity.this, ""+pojo.getMsg(), Toast.LENGTH_LONG).show();
+                        }
+
+
+                    }
+                }, new Response.ErrorListener() {
+
+                    @Override
+                    public void onErrorResponse(VolleyError error) {
+                        // TODO Auto-generated method stub
+                        Log.d("Details", error.toString());
+                    }
+                });
+
+        queue.add(jsObjRequest);
+
+    }
+
+
+
+    public void onClick(View arg0)
+    {
+        switch (arg0.getId())
+        {
+            case R.id.f_btn:
+
+                mWtype=edit_Wtype.getText().toString();
+                mWdisc=edit_Wdisc.getText().toString();
+                mDomainName= edit_domainName.getText().toString();
+                mOwnerName=edit_OwnerName.getText().toString();
+                mOwnerMob=edit_OwnerMob.getText().toString();
+                mOwnerState= edit_OwnerState.getText().toString();
+                mOwnerCity=  edit_OwnerCity.getText().toString();
+                mOwnerAddr= edit_OwnerAddr.getText().toString();
+                mOwnerEmail=  edit_OwnerEmail.getText().toString();
+
+
+
+                final String websiteType=edit_Wtype.getText().toString();
+                if(!isValidWebType(websiteType) || edit_Wtype.getText().toString().length()==0)
+                {
+                    edit_Wtype.setError("Enter Valid Type ");
+
+                }
+
+
+
+                if(edit_Wdisc.getText().toString().length()==0)
+                {
+                    edit_Wdisc.setError("Description is Required");
+
+                }
+
+
+
+                if(edit_domainName.getText().toString().length()==0)
+                {
+                    edit_domainName.setError("Enter Valid Domain Name");
+
+                }
+
+
+                final String name=edit_OwnerName.getText().toString();
+                if( !isValidOwnerName(name)|| edit_OwnerName.getText().toString().length()==0)
+                {
+                    edit_OwnerName.setError(" Enter the valid Name");
+                }
+
+
+                final String mobile=edit_OwnerMob.getText().toString();
+                if( !isValidMobile(mobile)|| edit_OwnerMob.getText().toString().length()==0)
+                {
+                    edit_OwnerMob.setError("Enter the Mobile Number");
+
+                }
+
+
+
+                final String state=edit_OwnerState.getText().toString();
+                if(!isValidOwnerState(state)|| edit_OwnerState.getText().toString().length()==0)
+                {
+                    edit_OwnerState.setError("Enter valid State");
+                }
+
+
+                final String city=edit_OwnerCity.getText().toString();
+                if(!isValidOwnerCity(city)|| edit_OwnerCity.getText().toString().length()==0)
+                {
+                    edit_OwnerCity.setError("Enter valid City");
+
+                }
+
+
+                if(edit_OwnerAddr.getText().toString().length()==0)
+                {
+                    edit_OwnerAddr.setError("Enter valid Address");
+                }
+
+
+
+
+                final  String email = edit_OwnerEmail.getText().toString();
+                if( !isValidEmail(email)|| edit_OwnerEmail.getText().toString().length()==0)
+                {
+                    edit_OwnerEmail.setError("Enter valid Email");
+
+                }
+
+                else {
+                    WebSiteDetailsPojo detailsPojo=new WebSiteDetailsPojo(edit_Wtype.getText().toString(),edit_Wdisc.getText().toString(),edit_OwnerName.getText().toString(),edit_OwnerMob.getText().toString(), edit_OwnerState.getText().toString(), edit_OwnerCity.getText().toString(),edit_OwnerAddr.getText().toString(),edit_OwnerEmail.getText().toString(), SharedPrefrencesHelper.getAgentId(WebSiteDetailsActivity.this),edit_domainName.getText().toString());
+
+                    arrayList.add(detailsPojo);
+
+
+                    Gson gson=new Gson();
+                    json=gson.toJson(detailsPojo);
+                    Log.d("json",json);
+
+
+                    makeNetCall();
+                }
+
+
+                break;
+
+
+
+        }
+
+    }
+
+
+
+    private boolean isValidWebType(String websiteType)
+    {
+        String WEBTYPE_PATTERN ="^[A-Za-z\\s]{1,}[\\.]{0,1}[A-Za-z\\\\s]{0,}$";
+
+
+        Pattern pattern = Pattern.compile(WEBTYPE_PATTERN);
+        Matcher matcher = pattern.matcher(websiteType);
+        return matcher.matches();
+    }
+
+
+
+    private boolean isValidOwnerName(String name)
+    {
+        String NAME_PATTERN = "^[A-Za-z\\s]{1,}[\\.]{0,1}[A-Za-z\\\\s]{0,}$";
+
+        Pattern pattern = Pattern.compile(NAME_PATTERN);
+        Matcher matcher = pattern.matcher(name);
+        return matcher.matches();
+    }
+
+
+    private boolean isValidMobile(String mobile)
+    {
+        String MOBILE_PATTERN = "^[2-9]{2}[0-9]{8}$";
+
+        Pattern pattern = Pattern.compile(MOBILE_PATTERN);
+        Matcher matcher = pattern.matcher(mobile);
+        return matcher.matches();
+    }
+
+
+    private boolean isValidEmail(String email)
+    {
+        String EMAIL_PATTERN = "^[_A-Za-z0-9-\\+]+(\\.[_A-Za-z0-9-]+)*@"
+                + "[A-Za-z0-9-]+(\\.[A-Za-z0-9]+)*(\\.[A-Za-z]{2,})$";
+
+        Pattern pattern = Pattern.compile(EMAIL_PATTERN);
+        Matcher matcher = pattern.matcher(email);
+        return matcher.matches();
+    }
+
+ /*   private boolean isValidDomain(String domain)
+    {
+        String DOMAIN_PATTERN ="^((?!-)[A-Za-z0-9-]{1,63}(?<!-)\\.)+[A-Za-z]{2,6}$";
+
+
+        Pattern pattern = Pattern.compile(DOMAIN_PATTERN);
+        Matcher matcher = pattern.matcher(domain);
+        return matcher.matches();
+    }*/
+
+    private boolean isValidOwnerState(String state)
+    {
+        String STATE_PATTERN = "^[A-Za-z\\s]{1,}[\\.]{0,1}[A-Za-z\\\\s]{0,}$";
+
+        Pattern pattern = Pattern.compile(STATE_PATTERN);
+        Matcher matcher = pattern.matcher(state);
+        return matcher.matches();
+    }
+
+
+
+    private boolean isValidOwnerCity(String city)
+    {
+        String CITY_PATTERN = "^[A-Za-z\\s]{1,}[\\.]{0,1}[A-Za-z\\\\s]{0,}$";
+
+        Pattern pattern = Pattern.compile(CITY_PATTERN);
+        Matcher matcher = pattern.matcher(city);
+        return matcher.matches();
+    }
+
+}
+
+
+
+

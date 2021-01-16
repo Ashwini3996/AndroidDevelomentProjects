@@ -1,0 +1,77 @@
+activity_demo.xml
+
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context="com.example.ashwinipalve.newsapp.activity.DemoActivity">
+
+
+<FrameLayout
+    android:id="@+id/container"
+    android:layout_above="@+id/btn_send"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"/>
+
+    <Button
+        android:id="@+id/btn_send"
+        android:layout_alignParentBottom="true"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="SEND"/>
+
+</RelativeLayout>
+
+
+
+
+//DemoActivity.java
+
+
+
+package com.example.ashwinipalve.newsapp.activity;
+
+import android.net.Uri;
+import android.support.v4.app.FragmentManager;
+import android.support.v4.app.FragmentTransaction;
+import android.support.v7.app.AppCompatActivity;
+import android.os.Bundle;
+import android.view.View;
+import android.widget.Button;
+import android.widget.Toast;
+
+import com.example.ashwinipalve.newsapp.R;
+import com.example.ashwinipalve.newsapp.fragment.HomeFragment;
+
+public class DemoActivity extends AppCompatActivity implements HomeFragment.OnFragmentInteractionListener{
+    private Button mSend;
+    FragmentManager mFragmentManager;
+    FragmentTransaction mFragmentTransaction;
+
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_demo);
+        getSupportActionBar().hide();
+
+        mSend=findViewById(R.id.btn_send);
+        mSend.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                mFragmentManager=getSupportFragmentManager();
+                mFragmentTransaction=mFragmentManager.beginTransaction();
+                mFragmentTransaction.add(R.id.container,new HomeFragment(),"Home");
+                mFragmentTransaction.commit();
+                Toast.makeText(DemoActivity.this,"Please enter ",Toast.LENGTH_SHORT).show();
+            }
+        });
+
+    }
+
+    @Override
+    public void onFragmentInteraction(Uri uri) {
+
+    }
+}

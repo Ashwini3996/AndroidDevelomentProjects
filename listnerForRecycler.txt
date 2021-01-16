@@ -1,0 +1,213 @@
+Android RecyclerView tutorial: How to Francesco Azzola  1 Year Ago
+Android RecyclerView is an important component that is present often in Android apps. It is important to know how to use it and how to customize its behavior. This tutorial will cover some important aspects about Android RecyclerView giving all the information you need to build a great Android app using it.
+
+As you may already know, Android RecyclerView is a new component introduced in Android Lollipop. This component increases performances respect to Android ListView. Moreover, respect to Android ListView, Android RecyclerView is much more customizable using Android Recyclerview adapter.
+
+In this tutorial, we will learn how to:
+
+
+ 
+how to use Android RecyclerView with a custom layout
+intercept user touch events
+customize RecyclerView appearance
+ 
+
+ Download Android source code
+
+
+
+Getting started with Android RecyclerView Adapter
+Android RecyclerView uses an Adapter to represent the information we want to show as a list. Even in Android ListView we use an adapter. Anyway, Android RecyclerView extends this concept and improves the way this adapter is used to increase overall performances.
+
+The adapter is a class that extends RecyclerView.Adapter and stands behind the UI and the underlying data we want to represent. For this reason, we have to customize it to use our class that represents the information.
+
+To start using Android RecyclerView we have to import the support library in the gradle file:
+
+dependencies {
+  ....
+  compile 'com.android.support:recyclerview-v7:<latest-version>'
+}
+Now, we are ready to use the RecyclerView UI component. To make things simple, we will use, as data layer, a simple class that represents the country and the respective population:
+
+public class Country {
+  protected String name;
+  protected double population;
+
+  public Country(String name, double population) {
+    this.name = name;
+    this.population = population;
+  }
+}
+The next step is defining it in the android layout file:
+
+<RelativeLayout
+  xmlns:android="http://schemas.android.com/apk/res/android"
+  xmlns:app="http://schemas.android.com/apk/res-auto"
+  xmlns:tools="http://schemas.android.com/tools"
+  android:layout_width="match_parent"
+  android:layout_height="match_parent"
+  android:paddingBottom="@dimen/activity_vertical_margin"
+  android:paddingLeft="@dimen/activity_horizontal_margin"
+  android:paddingRight="@dimen/activity_horizontal_margin"
+  android:paddingTop="@dimen/activity_vertical_margin"
+  app:layout_behavior="@string/appbar_scrolling_view_behavior"
+  tools:context="com.survivingwithandroid.recyclerview.MainActivity"
+  tools:showIn="@layout/activity_main">
+
+   <android.support.v7.widget.RecyclerView
+          android:id="@+id/recycler_view"
+          android:layout_width="match_parent"
+          android:layout_height="wrap_content"
+         android:scrollbars="vertical"/>
+
+</RelativeLayout>
+and get the reference in our class so that we can use it:
+
+RecyclerView rv = (RecyclerView) findViewById(R.id.recycler_view);
+At this moment, the Android RecyclerView is empty, we have to implement our adapter.
+
+
+public class CountryAdapter extends  
+            RecyclerView.Adapter<CountryAdapter.MyViewHolder> {
+
+  private List<Country> countryList;
+
+  /**
+   * View holder class
+  * */
+  public class MyViewHolder extends RecyclerView.ViewHolder {
+   public TextView countryText;
+   public TextView popText;
+
+   public MyViewHolder(View view) {
+     super(view);
+     countryText = (TextView) view.findViewById(R.id.countryName);
+     popText = (TextView) view.findViewById(R.id.pop);
+   }
+  }
+
+  public CountryAdapter(List<Country> countryList) {
+    this.countryList = countryList;
+  }
+
+  @Override
+  public void onBindViewHolder(MyViewHolder holder, int position) {
+    Country c = countryList.get(position);
+    holder.countryText.setText(c.name);
+    holder.popText.setText(String.valueOf(c.population));
+  }
+
+  @Override
+  public int getItemCount() {
+    return countryList.size();
+  }
+
+  @Override
+  public MyViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+   View v = LayoutInflater.from(parent.getContext())
+            .inflate(R.layout.row,parent, false);
+   return new MyViewHolder(v);
+  }
+}
+There are some important methods we have to override to customize the Android RecyclerView behavior. First of all, notice at the beginning, we have created a simple class (MyViewHolder) that holds the references to the row UI components. This class implements the View-Holder pattern.
+
+Next, in onCreateViewHolder we inflate the row layout returning an instance of the class MyViewHolder. In this simple example, the row layout is:
+
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical" android:layout_width="wrap_content"
+    android:layout_height="wrap_content">
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/countryName"
+        android:textStyle="bold"
+        />
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/pop"/>
+</LinearLayout>
+Finally, we override onBindViewHolder that binds our data to the UI. This method, simply, retrieves the data from an ArrayList. According to the current index position, it stores the values into the MyViewHolder.
+Now it is time to set the adapter into the Android RecyclerView:
+
+CountryAdapter ca = new CountryAdapter(countryList);
+rv.setAdapter(ca);
+Don’t forget to set the layout manager:
+
+LinearLayoutManager llm = new LinearLayoutManager(this);
+llm.setOrientation(LinearLayoutManager.VERTICAL);
+rv.setLayoutManager(llm);
+Running the example, we have:
+android recyclerview tutorialSave
+Android RecyclerView Item click
+Now that our component is configured and shows the information as a list, it is time to handle user clicks on RecyclerView items. In other words, we want to know if the an user clicks on a item and what type of click he is making: simple click or long click.
+When we use Android RecyclerView the things are a little more complex than Android ListView. In this case, we have to create a class that implements RecyclerView.OnItemTouchListener.
+
+public class RecyclerItemListener 
+           implements RecyclerView.OnItemTouchListener  {
+
+    private RecyclerTouchListener listener;
+    private GestureDetector gd;
+
+    public interface RecyclerTouchListener {
+        public void onClickItem(View v, int position) ;
+        public void onLongClickItem(View v, int position);
+    }
+
+    public RecyclerItemListener(Context ctx, final RecyclerView rv, 
+                                final RecyclerTouchListener listener) {
+        this.listener = listener;
+        gd = new GestureDetector(ctx, 
+             new GestureDetector.SimpleOnGestureListener() {
+                 @Override
+                 public void onLongPress(MotionEvent e) {
+                   // We find the view
+                   View v = rv.findChildViewUnder(e.getX(), e.getY());
+                   // Notify the even
+                   listener.onLongClickItem(v, rv.getChildAdapterPosition(v));
+                }
+
+               @Override
+               public boolean onSingleTapUp(MotionEvent e) {
+                  View v = rv.findChildViewUnder(e.getX(), e.getY());
+                  // Notify the even
+                  listener.onClickItem(v, rv.getChildAdapterPosition(v));
+                  return true;
+              }
+         });
+    }
+
+    @Override
+    public boolean onInterceptTouchEvent(RecyclerView rv, MotionEvent e) {
+        View child = rv.findChildViewUnder(e.getX(), e.getY());
+        return ( child != null && gd.onTouchEvent(e));
+    }
+
+    @Override
+    public void onTouchEvent(RecyclerView rv, MotionEvent e) {
+
+    }
+
+    @Override
+    public void onRequestDisallowInterceptTouchEvent(boolean disallowIntercept) {
+
+    }
+}
+We define a callback interface to notify the listener when the user clicks on an item. The first thing is creating an instance of GestureDetector. In this way  we can know when a user clicks and what click type he is doing.
+
+android recyclerview tutorialSave
+
+It is important to note that our class overrides onInterceptTouchEvent to know if the user selects and item and if the gesture detected is handled by our instance.
+To receive notification in the listener class, we implement the interface declared above:
+
+rv.addOnItemTouchListener(new RecyclerItemListener(getApplicationContext(), rv,
+      new RecyclerItemListener.RecyclerTouchListener() {
+           public void onClickItem(View v, int position) {
+               System.out.println("On Click Item interface");
+           }
+
+           public void onLongClickItem(View v, int position) {
+               System.out.println("On Long Click Item interface");
+           }
+}));

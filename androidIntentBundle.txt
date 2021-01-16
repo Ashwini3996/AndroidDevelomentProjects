@@ -1,0 +1,280 @@
+//bundle dmo with intent
+
+
+
+//MainActivity.java
+
+
+package com.example.ashwinipalve.myfirstapp;
+
+import android.content.Intent;
+import android.support.v7.app.AppCompatActivity;
+import android.os.Bundle;
+import android.view.View;
+import android.widget.Button;
+import android.widget.EditText;
+import android.widget.Toast;
+
+public class MainActivity extends AppCompatActivity implements View.OnClickListener {
+    private EditText uname;
+    private Button b1;
+
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_main);
+
+        uname=findViewById(R.id.uname);
+        b1=findViewById(R.id.b1);
+
+        b1.setOnClickListener(this);
+        uname.setOnClickListener(this);
+
+    }
+    public void onClick(View view)
+    {
+
+
+        switch (view.getId())
+        {
+
+            case R.id.b1:
+                String u1= uname.getText().toString();
+
+
+                if( uname.getText().toString().length() <= 0 )
+                {
+
+                    Toast.makeText(MainActivity.this,"Please enter the filds",Toast.LENGTH_SHORT).show();
+                }
+                else
+                {
+                    Intent intent = new Intent(MainActivity.this, IntentDemo.class);
+                    Bundle bundle=new Bundle();
+                    bundle.putString("uname",u1);
+                    intent.putExtras(bundle);
+                    startActivity(intent);
+
+                }
+
+
+                break;
+        }
+    }
+}
+
+
+
+//Second Activity IntentDemo.java
+
+
+package com.example.ashwinipalve.myfirstapp;
+
+import android.content.Intent;
+import android.support.v7.app.AppCompatActivity;
+import android.os.Bundle;
+import android.view.View;
+import android.widget.Button;
+import android.widget.EditText;
+import android.widget.TextView;
+import android.widget.Toast;
+
+public class IntentDemo extends AppCompatActivity  implements View.OnClickListener {
+
+    private TextView mTxtName;
+    private EditText addr;
+    private Button sendAddr;
+
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_intent);
+
+        mTxtName = findViewById(R.id.txt_name);
+        addr = findViewById(R.id.addr);
+        sendAddr = findViewById(R.id.sendAddr);
+
+        sendAddr.setOnClickListener(this);
+
+
+
+
+
+        /*Bundle bundle = getIntent().getExtras();
+        String data = bundle.getString("uname");
+
+        mTxtName.setText("Welcome  "+data);*/
+
+    }
+
+
+    public void onClick(View view) {
+        switch (view.getId()) {
+
+            case R.id.sendAddr:
+                String mAddr = addr.getText().toString();
+
+
+                if (addr.getText().toString().length() <= 0) {
+
+                    Toast.makeText(IntentDemo.this, "Please enter the filds", Toast.LENGTH_SHORT).show();
+                } else
+                    {
+                        Bundle bundle =new Bundle();
+                        bundle = getIntent().getExtras();
+                        String data = bundle.getString("uname");
+
+                        Intent intent = new Intent(IntentDemo.this, DisplayActivity.class);
+                    bundle.putString("addr",mAddr);
+                    bundle.putString("uname",data);
+                    intent.putExtras(bundle);
+
+                       /* mTxtName.setText("Welcome  "+data);*/
+
+
+                    startActivity(intent);
+
+                }
+
+
+                break;
+        }
+
+    }
+}
+
+
+
+
+
+//third activity DispalyActivity.java
+
+
+
+
+
+
+package com.example.ashwinipalve.myfirstapp;
+
+import android.support.v7.app.AppCompatActivity;
+import android.os.Bundle;
+import android.widget.TextView;
+
+public class DisplayActivity extends AppCompatActivity {
+
+    private TextView text2 ;
+
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_display);
+
+        init();
+        Bundle bundle=getIntent().getExtras();
+        String addr=bundle.getString("addr");
+
+        String data = bundle.getString("uname");
+        text2.setText("Address Is:- "+addr+"\nName Is:-"+data);
+    }
+
+    public void init()
+    {
+        text2=findViewById(R.id.text2);
+
+    }
+}
+
+
+
+
+
+//activity_main.xml
+
+
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context="com.example.ashwinipalve.myfirstapp.MainActivity">
+
+
+    <EditText
+        android:id="@+id/uname"
+        android:layout_width="250dp"
+        android:layout_height="wrap_content"
+        android:hint="UserName"/>
+
+
+
+    <Button
+        android:id="@+id/b1"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="start intent"
+        android:layout_centerInParent="true"
+        />
+
+</RelativeLayout>
+
+
+
+//activity_intent.xml
+
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context="com.example.ashwinipalve.myfirstapp.IntentDemo">
+
+    <TextView
+        android:id="@+id/txt_name"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textSize="15dp"/>
+
+
+     <EditText
+        android:id="@+id/addr"
+        android:layout_width="250dp"
+        android:layout_height="wrap_content"
+        android:hint="Enter Address"
+        >
+     </EditText>
+    <Button
+        android:id="@+id/sendAddr"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="SEND ADDR"
+        android:layout_centerInParent="true"
+        />
+
+</RelativeLayout>
+
+
+//activity_display.xml
+
+
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context="com.example.ashwinipalve.myfirstapp.DisplayActivity">
+
+
+    <TextView
+        android:id="@+id/text2"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textSize="15dp"/>
+
+
+
+</android.support.constraint.ConstraintLayout>

@@ -1,0 +1,98 @@
+public class ContentAdapter extends RecyclerView.Adapter<ContentAdapter.ViewHolder> {
+2
+ 
+3
+    public interface OnItemClickListener {
+4
+        void onItemClick(ContentItem item);
+5
+    }
+6
+ 
+7
+    private final List<ContentItem> items;
+8
+    private final OnItemClickListener listener;
+9
+ 
+10
+    public ContentAdapter(List<ContentItem> items, OnItemClickListener listener) {
+11
+        this.items = items;
+12
+        this.listener = listener;
+13
+    }
+14
+ 
+15
+    @Override public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+16
+        View v = LayoutInflater.from(parent.getContext()).inflate(R.layout.view_item, parent, false);
+17
+        return new ViewHolder(v);
+18
+    }
+19
+ 
+20
+    @Override public void onBindViewHolder(ViewHolder holder, int position) {
+21
+        holder.bind(items.get(position), listener);
+22
+    }
+23
+ 
+24
+    @Override public int getItemCount() {
+25
+        return items.size();
+26
+    }
+27
+ 
+28
+    static class ViewHolder extends RecyclerView.ViewHolder {
+29
+ 
+30
+        private TextView name;
+31
+        private ImageView image;
+32
+ 
+33
+        public ViewHolder(View itemView) {
+34
+            super(itemView);
+35
+            name = (TextView) itemView.findViewById(R.id.name);
+36
+            image = (ImageView) itemView.findViewById(R.id.image);
+37
+        }
+38
+ 
+39
+        public void bind(final ContentItem item, final OnItemClickListener listener) {
+40
+            name.setText(item.name);
+41
+            Picasso.with(itemView.getContext()).load(item.imageUrl).into(image);
+42
+            itemView.setOnClickListener(new View.OnClickListener() {
+43
+                @Override public void onClick(View v) {
+44
+                    listener.onItemClick(item);
+45
+                }
+46
+            });
+47
+        }
+48
+    }
+49
+}
+

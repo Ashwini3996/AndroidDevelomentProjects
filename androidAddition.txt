@@ -1,0 +1,217 @@
+//Addition
+
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    >
+    <TextView
+        android:id="@+id/textView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="FirstNo:"
+        android:textSize="25sp"
+        />
+    <EditText
+        android:inputType="number"
+        android:id="@+id/first_no"
+        android:layout_width="200dp"
+        android:layout_height="wrap_content"
+       android:layout_marginTop="30dp"
+        />
+
+    <TextView
+        android:id="@id/textView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/first_no"
+        android:text="SecondNo"
+        android:textSize="25sp" />
+
+    <EditText
+        android:inputType="number"
+        android:id="@+id/second_no"
+        android:layout_width="250dp"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/first_no"
+        android:layout_marginTop="30dp"/>
+<LinearLayout
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:orientation="horizontal"
+    android:layout_marginTop="120dp">
+    <Button
+        android:id="@+id/add"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/textView"
+        android:layout_centerInParent="true"
+        android:layout_marginTop="40dp"
+        android:text="Add"
+        android:textSize="20sp"
+        />
+    <Button
+        android:id="@+id/sub"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="40dp"
+        android:text="Sub"
+        android:textSize="20sp"
+        />
+    <Button
+        android:id="@+id/mult"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="40dp"
+        android:text="Mult"
+        android:textSize="20sp"
+        />
+    <Button
+        android:id="@+id/div"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="40dp"
+        android:text="Div"
+        android:textSize="20sp"
+        />
+
+</LinearLayout>
+
+    <TextView
+        android:id="@+id/ans"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Ans Is:"
+        android:textSize="25sp"
+        android:layout_centerInParent="true"
+        android:layout_marginTop="30dp"
+         />
+
+</RelativeLayout>
+
+
+
+
+//Addition.java
+
+package com.example.ashwinipalve.myapplication;
+
+import android.support.v7.app.AppCompatActivity;
+import android.os.Bundle;
+import android.view.View;
+import android.widget.Button;
+import android.widget.EditText;
+import android.widget.TextView;
+import android.widget.Toast;
+
+public class Addition extends AppCompatActivity implements View.OnClickListener {
+
+    private EditText mFirst, mSecond;
+    private Button mAdd, mSub, mMult, mDiv;
+    private TextView ans;
+    String mNumber;
+    int no1, no2;
+    int flag=0;
+
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_addition);
+
+        mFirst = findViewById(R.id.first_no);
+        mSecond = findViewById(R.id.second_no);
+        mAdd= findViewById(R.id.add);
+        mSub= findViewById(R.id.sub);
+        mMult= findViewById(R.id.mult);
+        mDiv= findViewById(R.id.div);
+        ans = findViewById(R.id.ans);
+        mAdd.setOnClickListener(this);
+        mSub.setOnClickListener(this);
+        mMult.setOnClickListener(this);
+        mDiv.setOnClickListener(this);
+    }
+
+    @Override
+    public void onClick(View view) {
+
+        if( mFirst.getText().toString().length() <= 0 ||  mSecond.getText().toString().length() <= 0)
+        {
+            flag=1;
+            //Toast.makeText(Addition.this,"Please enter the number",Toast.LENGTH_SHORT).show();
+        }
+        else
+        {
+            flag=0;
+            no1 = Integer.parseInt(mFirst.getText().toString());
+            no2 = Integer.parseInt(mSecond.getText().toString());
+        }
+
+
+        switch (view.getId())
+      {
+
+          case R.id.add :
+
+              if(flag == 1)
+              {
+                  Toast.makeText(Addition.this,"Please enter the number",Toast.LENGTH_SHORT).show();
+
+              }
+              else {
+                  int add = no1 + no2;
+                  ans.setText("Ans Is:" + add);
+              }
+              break;
+
+
+          case R.id.sub :
+              if(flag == 1)
+              {
+                  Toast.makeText(Addition.this,"Please enter the number",Toast.LENGTH_SHORT).show();
+
+              }
+              else {
+                  int sub = no1 - no2;
+                  ans.setText("Ans Is:" + sub);
+              }
+                          break;
+
+
+          case R.id.mult :
+              if(flag == 1)
+              {
+                  Toast.makeText(Addition.this,"Please enter the number",Toast.LENGTH_SHORT).show();
+
+              }
+              else {
+
+                  int mult = no1 * no2;
+                  ans.setText("Ans Is:" + mult);
+              }
+                          break;
+          case R.id.div :
+              if(flag == 1)
+              {
+                  Toast.makeText(Addition.this,"Please enter the number",Toast.LENGTH_SHORT).show();
+
+              }
+              else {
+                  int div = no1 / no2;
+                  ans.setText("Ans Is:" + div);
+              }
+              break;
+
+
+
+      }
+
+
+
+
+
+
+        /*Toast.makeText(Addition.this, "Button clicked", Toast.LENGTH_SHORT).show();*/
+    }
+
+}

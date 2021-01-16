@@ -1,0 +1,307 @@
+//Test App befor doing the validations import lib for validations 
+//compile 'com.basgeekball:awesome-validation:1.3'
+            
+
+package com.example.ashwinipalve.testapp;
+
+import android.content.Intent;
+import android.support.v7.app.AppCompatActivity;
+import android.os.Bundle;
+import android.util.Patterns;
+import android.view.View;
+import android.widget.Button;
+import android.widget.EditText;
+import android.widget.Toast;
+
+import com.basgeekball.awesomevalidation.AwesomeValidation;
+import com.basgeekball.awesomevalidation.ValidationStyle;
+
+public class MainActivity extends AppCompatActivity implements View.OnClickListener {
+
+    private Button reg;
+    private EditText name,mobile,email,loc;
+    String mName,mMobile,mEmail,mLoc;
+
+    private AwesomeValidation awesomeValidation;
+
+
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_main);
+
+
+        awesomeValidation = new AwesomeValidation(ValidationStyle.BASIC);
+
+
+        reg=findViewById(R.id.reg);
+        name=findViewById(R.id.name);
+        mobile=findViewById(R.id.mobile);
+        email=findViewById(R.id.email);
+        loc=findViewById(R.id.loc);
+
+
+        awesomeValidation.addValidation(this, R.id.name, "^[A-Za-z\\s]{1,}[\\.]{0,1}[A-Za-z\\s]{0,}$", R.string.nameerror);
+        awesomeValidation.addValidation(this, R.id.email, Patterns.EMAIL_ADDRESS, R.string.emailerror);
+        awesomeValidation.addValidation(this, R.id.mobile, "^[2-9]{2}[0-9]{8}$", R.string.mobileerror);
+        awesomeValidation.addValidation(this, R.id.loc, "^[A-Za-z\\s]{1,}[\\.]{0,1}[A-Za-z\\s]{0,}$", R.string.locerror);
+
+
+        reg.setOnClickListener(this);
+        name.setOnClickListener(this);
+        mobile.setOnClickListener(this);
+        email.setOnClickListener(this);
+        loc.setOnClickListener(this);
+
+
+    }
+
+
+    private void submitForm() {
+        //first validate the form then move ahead
+        //if this becomes true that means validation is successfull
+        if (awesomeValidation.validate()) {
+
+
+            /*mName=name.getText().toString();*/
+            Toast.makeText(this, "Validation Successfull", Toast.LENGTH_LONG).show();
+
+            //process the data further
+
+           /* Intent intent=new Intent(MainActivity.this ,formvalidation.class);
+            intent.putExtra("name",mName);*/
+        }
+    }
+
+
+
+
+
+    public void onClick(View view)
+    {
+
+
+        /*if (view == reg)
+        {
+            mName=name.getText().toString();
+            Intent intent=new Intent(MainActivity.this ,formvalidation.class);
+            intent.putExtra("name",mName);
+
+            submitForm();
+        }*/
+
+       switch (view.getId())
+        {
+            case R.id.reg:
+                  mName=name.getText().toString();
+                 mMobile=mobile.getText().toString();
+                 mEmail=email.getText().toString();
+                 mLoc=loc.getText().toString();
+
+
+                 if(name.getText().toString().length()<=0 || mobile.getText().toString().length()<=0 || email.getText().toString().length()<=0 || loc.getText().toString().length()<=0 )
+                 {
+                     Toast.makeText(MainActivity.this,"Please enter the filds",Toast.LENGTH_SHORT).show();
+
+                 }
+                 else
+                 {
+
+                     Intent intent=new Intent(MainActivity.this ,formvalidation.class);
+                     Bundle b = new Bundle();
+                     b.putString("key", "data");
+                     intent.putExtra("name",mName);
+                     intent.putExtra("B", b);
+                     startActivity(intent);
+
+                     submitForm();
+                 }
+
+                 break;
+        }
+
+
+
+
+
+
+
+        }
+    }
+
+
+
+
+
+
+
+
+
+
+
+//activity_main.xml
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    >
+
+    <EditText
+        android:id="@+id/name"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="NAME"
+        android:textSize="20sp"
+        android:layout_margin="10dp"
+        android:ems="10"
+        android:inputType="textPersonName"
+
+
+        />
+
+    <EditText
+        android:id="@+id/mobile"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="MOBILE"
+        android:textSize="20sp"
+        android:layout_margin="10dp"
+        android:inputType="number"
+        android:ems="10"
+
+        />
+    <EditText
+        android:id="@+id/email"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="E-MAIL"
+        android:textSize="20sp"
+        android:layout_margin="10dp"
+        android:inputType="textEmailAddress"
+
+        />
+
+    <EditText
+        android:id="@+id/loc"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="CITY/NEAREST LOCATION"
+        android:textSize="20sp"
+        android:layout_margin="10dp"
+        />
+
+
+    <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:tools="http://schemas.android.com/tools"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:layout_margin="25dp"
+
+
+        >
+        <TextView
+            android:text="SLIDE IF YOU'RE NOT A ROBOT"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textSize="15sp"
+            />
+        <Switch
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="10dp"/>
+
+    </LinearLayout>
+
+    <Button
+        android:id="@+id/reg"
+        android:layout_width="300dp"
+        android:layout_height="wrap_content"
+        android:text="REGISTER"
+        android:textSize="18sp"
+        android:layout_marginLeft="10dp"
+        android:background="#ff0000"
+        android:textColor="#ffffff"/>
+
+</LinearLayout>
+
+
+
+
+
+//string.xml
+
+<resources>
+    <string name="app_name">Test App</string>
+
+    <string name="nameerror">Enter a valid name</string>
+    <string name="emailerror">Enter a valid email</string>
+    <string name="mobileerror">Enter a valid mobile</string>
+    <string name="locerror">Enter a valid location</string>
+</resources>
+
+
+
+//activity_formvalidation.xml
+
+
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context="com.example.ashwinipalve.testapp.formvalidation">
+
+
+
+    <TextView
+        android:id="@+id/text"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textSize="15dp">
+    </TextView>
+
+
+</android.support.constraint.ConstraintLayout>
+
+
+
+
+//formvalidation.java
+
+
+
+package com.example.ashwinipalve.testapp;
+
+import android.content.Intent;
+import android.support.v7.app.AppCompatActivity;
+import android.os.Bundle;
+import android.widget.TextView;
+
+public class formvalidation extends AppCompatActivity {
+
+    private TextView mTxtName ;
+
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_formvalidation);
+
+
+        init();
+        Intent intent=getIntent();
+        Bundle b = intent.getBundleExtra("B");
+        String name=intent.getStringExtra("name");
+
+        mTxtName.setText("Welcome  "+name);
+
+    }
+
+    private void init() {
+
+        mTxtName=findViewById(R.id.text);
+    }
+}

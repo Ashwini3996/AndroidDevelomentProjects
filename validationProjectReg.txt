@@ -1,0 +1,291 @@
+//Project infoActivity.java
+
+
+package com.example.ashwinipalve.mylistview.activity;
+
+import android.content.Intent;
+import android.support.design.widget.FloatingActionButton;
+import android.support.v7.app.AppCompatActivity;
+import android.os.Bundle;
+import android.support.v7.widget.Toolbar;
+import android.view.View;
+import android.widget.EditText;
+import android.widget.Toast;
+
+import com.example.ashwinipalve.mylistview.R;
+
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
+public class InfoActivity extends AppCompatActivity  implements View.OnClickListener
+{
+
+    private EditText edit_name,e_domainName,e_vendorMobile,e_websiteType,e_email,e_addNote;
+    private FloatingActionButton f_btn;
+    String mName,mDomainName,mVendorMobile,mWebsiteType,mEmail,mAddNote;
+
+
+    @Override
+    protected void onCreate(Bundle savedInstanceState)
+        {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_info);
+
+            Toolbar myToolbar =findViewById(R.id.my_toolbar);
+            setSupportActionBar(myToolbar);
+
+
+
+            edit_name=findViewById(R.id.edit_name);
+            e_domainName=findViewById(R.id.e_domainName);
+            e_vendorMobile=findViewById(R.id.e_vendorMobile);
+            e_websiteType=findViewById(R.id.e_websiteType);
+            e_email=findViewById(R.id.e_email);
+            e_addNote=findViewById(R.id.e_addNote);
+            f_btn=findViewById(R.id.f_btn);
+
+            f_btn.setOnClickListener(this);
+
+        }
+
+
+
+
+
+
+
+
+public void onClick(View arg0)
+        {
+
+            switch (arg0.getId())
+            {
+                case R.id.f_btn:
+
+                    mName=edit_name.getText().toString();
+                    mDomainName=e_domainName.getText().toString();
+                    mVendorMobile=e_vendorMobile.getText().toString();
+                    mWebsiteType=e_websiteType.getText().toString();
+                    mEmail=e_email.getText().toString();
+                    mAddNote=e_addNote.getText().toString();
+
+                    final  String name = edit_name.getText().toString();
+                    if(!isValidName(name) || edit_name.getText().toString().length()==0)
+                    {
+                        edit_name.setError("Username is Required");
+                        edit_name.requestFocus();
+                    }
+
+                    final String domain=e_domainName.getText().toString();
+                    if( !isValidDomain(domain) || e_domainName.getText().toString().length()==0)
+                    {
+                        e_domainName .setError("Domain Name is Required");
+                        e_domainName.requestFocus();
+                    }
+
+
+
+                    final  String mobile = e_vendorMobile.getText().toString();
+                    if(!isValidMobile(mobile) || e_vendorMobile.getText().toString().length()==0)
+                    {
+                        e_vendorMobile.setError("Mobile Number is Requird");
+                        e_vendorMobile.requestFocus();
+                    }
+
+
+                    final  String websiteType=e_websiteType.getText().toString();
+                    if(!isValidDomain(websiteType) || e_websiteType.getText().toString().length()==0)
+                    {
+                        e_websiteType.setError("Website Type is required");
+                        e_websiteType.requestFocus();
+                    }
+
+                    final  String email = e_email.getText().toString();
+                    if(  !isValidEmail(email)|| e_email.getText().toString().length()==0)
+                    {
+                        e_email.setError("Email Id is required");
+                        e_email.requestFocus();
+                    }
+
+                    if(e_addNote.getText().toString().length()==0)
+                    {
+                        e_addNote.setError("field is required");
+                        e_addNote.requestFocus();
+                    }
+
+                    else {
+                        Toast.makeText(InfoActivity.this, "Success", Toast.LENGTH_LONG).show();
+                        Intent intent = new Intent(InfoActivity.this, SecondActivity.class);
+                        startActivity(intent);
+                    }
+
+
+                    break;
+            }
+        }
+
+
+
+
+
+//validations
+    private boolean isValidName(String name)
+    {
+        String NAME_PATTERN = "^[A-Za-z\\s]{1,}[\\.]{0,1}[A-Za-z\\\\s]{0,}$";
+
+        Pattern pattern = Pattern.compile(NAME_PATTERN);
+        Matcher matcher = pattern.matcher(name);
+        return matcher.matches();
+    }
+
+    private boolean isValidMobile(String mobile)
+    {
+        String MOBILE_PATTERN = "^[2-9]{2}[0-9]{8}$";
+
+        Pattern pattern = Pattern.compile(MOBILE_PATTERN);
+        Matcher matcher = pattern.matcher(mobile);
+        return matcher.matches();
+    }
+
+
+    private boolean isValidEmail(String email)
+    {
+        String EMAIL_PATTERN = "^[_A-Za-z0-9-\\+]+(\\.[_A-Za-z0-9-]+)*@"
+                + "[A-Za-z0-9-]+(\\.[A-Za-z0-9]+)*(\\.[A-Za-z]{2,})$";
+
+        Pattern pattern = Pattern.compile(EMAIL_PATTERN);
+        Matcher matcher = pattern.matcher(email);
+        return matcher.matches();
+    }
+
+
+    private boolean isValidDomain(String domain)
+    {
+        String EMAIL_PATTERN ="^((?!-)[A-Za-z0-9-]{1,63}(?<!-)\\.)+[A-Za-z]{2,6}$";
+
+
+        Pattern pattern = Pattern.compile(EMAIL_PATTERN);
+        Matcher matcher = pattern.matcher(domain);
+        return matcher.matches();
+    }
+
+
+
+    private boolean isValidWebType(String websiteType)
+    {
+        String EMAIL_PATTERN ="^[A-Za-z\\s]{1,}[\\.]{0,1}[A-Za-z\\\\s]{0,}$";
+
+
+        Pattern pattern = Pattern.compile(EMAIL_PATTERN);
+        Matcher matcher = pattern.matcher(websiteType);
+        return matcher.matches();
+    }
+
+}
+
+
+
+
+
+
+
+//info_activity.xml
+
+
+
+
+<?xml version="1.0" encoding="utf-8"?>
+
+
+    <LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    tools:context="com.example.ashwinipalve.mylistview.activity.InfoActivity">
+
+
+   <!-- <android.support.v7.widget.Toolbar
+        android:id="@+id/my_toolbar"
+        android:layout_width="match_parent"
+        android:layout_height="?attr/actionBarSize"
+        android:background="?attr/colorPrimary"
+        android:elevation="4dp"
+        android:theme="@style/ThemeOverlay.AppCompat.ActionBar"
+        app:popupTheme="@style/ThemeOverlay.AppCompat.Light"/>
+-->
+
+    <EditText
+        android:id="@+id/edit_name"
+        android:layout_width="300dp"
+        android:layout_height="wrap_content"
+        android:hint="Name"
+        android:padding="20dp"
+
+        />
+
+
+    <EditText
+        android:id="@+id/e_domainName"
+        android:layout_width="300dp"
+        android:layout_height="wrap_content"
+        android:hint="Domain Name"
+        android:padding="20dp"
+
+        />
+
+    <EditText
+    android:id="@+id/e_vendorMobile"
+    android:layout_width="300dp"
+    android:layout_height="wrap_content"
+    android:hint="Vendor Mobile"
+    android:padding="20dp"
+    android:inputType="number"
+
+    />
+
+    <EditText
+        android:id="@+id/e_websiteType"
+        android:layout_width="300dp"
+        android:layout_height="wrap_content"
+        android:hint="Website Type"
+        android:padding="20dp"
+        />
+
+    <EditText
+        android:id="@+id/e_email"
+        android:layout_width="300dp"
+        android:layout_height="wrap_content"
+        android:hint="Email Id"
+        android:padding="20dp"
+
+
+        />
+
+    <EditText
+        android:id="@+id/e_addNote"
+        android:layout_width="300dp"
+        android:layout_height="wrap_content"
+        android:hint="Additional Note"
+        android:padding="20dp" />
+
+
+
+    <android.support.design.widget.FloatingActionButton
+        android:id="@+id/f_btn"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="bottom|end"
+        android:src="@drawable/ic_add"
+        />
+
+
+</LinearLayout>
+
+
+
+
+
+

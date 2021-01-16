@@ -1,0 +1,254 @@
+//httphandler
+
+
+Why we use handlers with thread :
+
+When we install an application in android then it create a thread  for that application called MAIN UI Thread, All activities run inside that thread , By the android single thread model rule we can not access UI elements (bitmap , textview etc..) directly for another thread defined inside that activity.
+ 
+ So if want to access Main UI Thread elements by another thread then we will use  handlers.
+
+Thread With Handlers Example :
+In this example  we are creating a thread and call webservice to get server response and after got the response,then do other functionality ( Save Data in database or show alert ,Redirect to another activity).
+
+AndroidManifest.xml file
+
+Add Internet Permission
+
+ 
+
+<uses-permission android:name="android.permission.INTERNET"></uses-permission>
+ 
+
+android_example_thread_handler.xml File
+
+Create button with id : GetServerData
+
+ 
+
+<Button android:id="@+id/GetServerData"
+      android:text="Click To Get Server Data"
+      android:cursorVisible="true"
+      android:clickable="true"
+      android:layout_width="wrap_content"
+      android:layout_height="wrap_content" 
+      android:layout_gravity="center_horizontal"
+/>
+ 
+
+ThreadHandlerAndroidExample.java  File :
+ 
+
+  public class ThreadHandlerAndroidExample extends Activity {
+ 
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+     
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.android_example_thread_handler);
+         
+        final Button GetServerData = (Button) findViewById(R.id.GetServerData);
+         
+         
+        // On button click call this listener
+        GetServerData.setOnClickListener(new OnClickListener() {
+            public void onClick(View v) {
+                 
+                Toast.makeText(getBaseContext(),
+                        "Please wait, connecting to server.",
+                        Toast.LENGTH_SHORT).show();
+ 
+ 
+                // Create Inner Thread Class
+                Thread background = new Thread(new Runnable() {
+                     
+                    private final HttpClient Client = new DefaultHttpClient();
+                    private String URL = "/media/webservice/getPage.php";
+                     
+                    // After call for background.start this run method call
+                    public void run() {
+                        try {
+ 
+                            String SetServerString = "";
+                            HttpGet httpget = new HttpGet(URL);
+                            ResponseHandler<String> responseHandler = new BasicResponseHandler();
+                            SetServerString = Client.execute(httpget, responseHandler);
+                            threadMsg(SetServerString);
+ 
+                        } catch (Throwable t) {
+                            // just end the background thread
+                            Log.i("Animation", "Thread  exception " + t);
+                        }
+                    }
+ 
+                    private void threadMsg(String msg) {
+ 
+                        if (!msg.equals(null) && !msg.equals("")) {
+                            Message msgObj = handler.obtainMessage();
+                            Bundle b = new Bundle();
+                            b.putString("message", msg);
+                            msgObj.setData(b);
+                            handler.sendMessage(msgObj);
+                        }
+                    }
+ 
+                    // Define the Handler that receives messages from the thread and update the progress
+                    private final Handler handler = new Handler() {
+ 
+                        public void handleMessage(Message msg) {
+                             
+                            String aResponse = msg.getData().getString("message");
+ 
+                            if ((null != aResponse)) {
+ 
+                                // ALERT MESSAGE
+                                Toast.makeText(
+                                        getBaseContext(),
+                                        "Server Response: "+aResponse,
+                                        Toast.LENGTH_SHORT).show();
+                            }
+                            else
+                            {
+ 
+                                    // ALERT MESSAGE
+                                    Toast.makeText(
+                                            getBaseContext(),
+                                            "Not Got Response From Server.",
+                                            Toast.LENGTH_SHORT).show();
+                            }    
+ 
+                        }
+                    };
+ 
+                });
+                // Start Thread
+                background.start();  //After call start method thread called run Method
+            }
+        });
+         
+    }
+ 
+}
+ 
+
+Explaination :
+ 
+
+GetServerData Button click Listener :
+
+ 
+
+GetServerData.setOnClickListener(new OnClickListener()
+ 
+
+Show alert message:
+
+ 
+
+Toast.makeText(getBaseContext(),
+                "Please wait, connecting to server.",
+                Toast.LENGTH_SHORT).show();
+ 
+
+Create new thread :
+
+ 
+
+Thread background = new Thread(new Runnable()  
+  
+ 
+
+Define http client :
+
+ 
+
+private final HttpClient Client = new DefaultHttpClient(); 
+  
+ 
+
+Define http url to send request :
+
+ 
+
+private String URL = "/media/webservice/getPage.php"; 
+  
+ 
+
+Create run() method :
+
+Inside run method write code for http request to server and set server response in SetServerString String variable,  
+Call  threadMsg function and pass SetServerString.
+
+ 
+
+// After call for background.start this run method call
+public void run() {
+          try {
+ 
+                   String SetServerString = "";
+                   HttpGet httpget = new HttpGet(URL);
+                   ResponseHandler<String> responseHandler = new BasicResponseHandler();
+                   SetServerString = Client.execute(httpget, responseHandler);
+                   threadMsg(SetServerString);
+ 
+               } catch (Throwable t) {
+                   // just end the background thread
+                   Log.i("ThreadHandler", "Thread  exception " + t);
+               }
+       }
+ 
+
+Create threadMsg Method :
+
+    Use handler Object to set handler message and call sendMessage() method.
+    After call on sendMessage() method  handler class handleMessage(str)  automatically call.
+
+ 
+
+private void threadMsg(String msg) {
+     if (!msg.equals(null) && !msg.equals("")) {
+           Message msgObj = handler.obtainMessage();
+           Bundle b = new Bundle();
+           b.putString("message", msg);
+           msgObj.setData(b);
+           handler.sendMessage(msgObj);
+       }
+   }
+ 
+
+Handler Inner Class :
+
+         new Handler()                                          -  create new handler object
+         msg.getData().getString("message")  -  Get sent message from sendMessage function.
+
+ 
+
+// Define the Handler that receives messages from the thread and update the progress
+            
+  private final Handler handler = new Handler() {
+ 
+           // Create handleMessage function
+ 
+          public void handleMessage(Message msg) {
+                   
+                  String aResponse = msg.getData().getString("message");
+ 
+                  if ((null != aResponse)) {
+ 
+                      //ALERT MESSAGE
+                      Toast.makeText(
+                              getBaseContext(),
+                              "Server Response: "+aResponse,
+                              Toast.LENGTH_SHORT).show();
+                  }
+                  else
+                  {
+                          //ALERT MESSAGE
+                          Toast.makeText(
+                                  getBaseContext(),
+                                  "Not Got Response From Server.",
+                                  Toast.LENGTH_SHORT).show();
+                  }    
+ 
+              }
+          };
+ 

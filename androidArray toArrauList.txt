@@ -1,0 +1,156 @@
+//array to arrayList
+
+
+In the last tutorial we have shared two methods of converting an ArrayList to Array with example. Here we are sharing three different ways to convert an Array to ArrayList. Basically we are converting an String Array to ArrayList of String type.
+
+String array[] to ArrayList<String>
+
+
+Method 1: Conversion using Arrays.asList()
+Syntax:
+
+
+
+ArrayList<T> arraylist= new ArrayList<T>(Arrays.asList(arrayname));
+
+
+
+
+
+Example:
+
+In this example we are using Arrays.asList method to convert the Array to ArrayList.
+
+import java.util.*;
+
+public class ArrayToArrayList {
+     public static void main(String[] args) {
+
+	  /* Array Declaration and initialization*/
+	  String citynames[]={"Agra", "Mysore", "Chandigarh", "Bhopal"};
+
+	  /*Array to ArrayList conversion*/
+	  ArrayList<String> citylist= new ArrayList<String>(Arrays.asList(citynames));
+
+	  /*Adding new elements to the converted List*/
+	  citylist.add("New City2");
+	  citylist.add("New City3");
+
+	  /*Final ArrayList content display using for*/
+	  for (String str: citylist)
+	  {
+		System.out.println(str);
+       	  }
+      }
+}
+
+
+
+
+Output:
+
+Agra
+Mysore
+Chandigarh
+Bhopal
+New City2
+New City3
+
+
+
+
+
+
+
+
+
+Method 2: Collections.addAll method
+
+Collections.addAll method all the array elements to the specified collection. This is how Collections.addAll method is being called. It does the same as Arrays.asList method however it is much faster than it so performance wise this is a best way to get the array converted to ArrayList.
+
+
+
+String array[]={new Item(1), new Item(2), new Item(3), new Item(4)};
+ArrayList<T> arraylist = new ArrayList<T>();
+Collections.addAll(arraylist, array);
+
+OR
+
+
+
+
+Collections.addAll(arraylist, new Item(1), new Item(2), new Item(3), new Item(4));
+
+Example
+
+import java.util.*;
+
+public class Example2 {
+	public static void main(String[] args) {
+
+	    /* Array Declaration and initialization*/
+	    String array[]={"Hi", "Hello", "Howdy", "Bye"};
+
+	    /*ArrayList declaration*/
+	    ArrayList<String> arraylist= new ArrayList<String>();
+
+	    /*Conversion*/
+	    Collections.addAll(arraylist, array);
+
+	    /*Adding new elements to the converted List*/
+	    arraylist.add("String1");
+	    arraylist.add("String2");
+
+	    /*Display array list*/
+	    for (String str: arraylist)
+	    {
+	 	System.out.println(str);
+	    }
+	}
+}
+Output
+
+Hi
+Hello
+Howdy
+Bye
+String1
+String2
+Method 3: Manual way of doing things
+We can also add all the array’s element to the array list manually. Below example shows the logic of manual conversion.
+
+package beginnersbook.com;
+
+import java.util.*;
+
+public class Details {
+	public static void main(String[] args) {
+
+	    /*ArrayList declaration*/
+	    ArrayList<String> arraylist= new ArrayList<String>();
+
+	    /*Initialized Array*/
+	    String array[] = {"Text1","Text2","Text3","Text4"};   
+
+	    /*array.length returns the current number of 
+	     * elements present in array*/
+	    for(int i =0;i<array.length;i++)
+            {
+
+	         /* We are adding each array's element to the ArrayList*/
+		 arraylist.add(array[i]);
+	    }
+
+	    /*ArrayList content*/
+	    for(String str: arraylist)
+	    {
+	         System.out.println(str);
+	    }
+      }
+}
+Output:
+
+Text1
+Text2
+Text3
+Text4

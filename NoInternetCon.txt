@@ -1,0 +1,48 @@
+To check Network connection availability use the below
+
+    public class CheckNetwork {
+
+
+private static final String TAG = CheckNetwork.class.getSimpleName();
+
+
+
+public static boolean isInternetAvailable(Context context)
+{
+    NetworkInfo info = (NetworkInfo) ((ConnectivityManager)
+    context.getSystemService(Context.CONNECTIVITY_SERVICE)).getActiveNetworkInfo();
+
+    if (info == null)
+    {
+         Log.d(TAG,"no internet connection");
+         return false;
+    }
+    else
+    {
+        if(info.isConnected())
+        {
+            Log.d(TAG," internet connection available...");
+            return true;
+        }
+        else
+        {
+            Log.d(TAG," internet connection");
+            return true;
+        }
+
+    }
+}
+    }
+In your Activity
+
+              if(CheckNetwork.isInternetAvailable(Activity.this)) //returns true if internet available
+                {
+
+                        //do something. loadwebview.
+                }   
+               else
+                {
+                    Toast.makeText(Activity.this,"No Internet Connection",1000).show();
+                }  
+
+

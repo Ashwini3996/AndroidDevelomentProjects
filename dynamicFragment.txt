@@ -1,0 +1,71 @@
+package com.example.ashwinipalve.newsapp.adapter;
+
+import android.content.Context;
+import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
+import android.support.v4.app.FragmentPagerAdapter;
+import android.support.v4.app.FragmentStatePagerAdapter;
+
+import com.example.ashwinipalve.newsapp.R;
+import com.example.ashwinipalve.newsapp.fragment.HomeFragment;
+import com.example.ashwinipalve.newsapp.fragment.SportFragment;
+
+import java.util.ArrayList;
+import java.util.List;
+
+/**
+ * Created by Ashwini Palve on 26/03/2018.
+ */
+
+public class HomeFragmentPagerAdapter extends FragmentStatePagerAdapter
+{
+     Context mContext;
+
+
+    private final List<Fragment> mFragmentList = new ArrayList<>();
+    private final List<String> mFragmentTitleList = new ArrayList<>();
+
+
+    public HomeFragmentPagerAdapter(FragmentManager fm, Context mContext) {
+        super(fm);
+        this.mContext = mContext;
+    }
+    // This determines the fragment for each tab
+
+    @Override
+    public Fragment getItem(int position)
+    {
+          return  mFragmentList.get(position);
+    }
+
+
+    public void addFragment(Fragment fragment, String title) {
+        mFragmentList.add(fragment);
+        mFragmentTitleList.add(title);
+    }
+
+
+
+
+    // This determines the number of tabs
+
+
+    @Override
+    public int getCount()
+        {return mFragmentList.size();}
+
+    // This determines the title for each tab
+
+
+    @Override
+    public CharSequence getPageTitle(int position) {
+        // Generate title based on item position
+      return  mFragmentTitleList.get(position);
+
+
+    }
+}
+
+
+
+

@@ -1,0 +1,233 @@
+//from json
+
+
+
+//activity_info_main.xml
+
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context="com.example.ashwinipalve.testapp.activity.InfoMainActivity">
+
+<ListView
+    android:id="@+id/list_item"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content">
+
+</ListView>
+
+
+</LinearLayout>
+
+
+
+
+
+
+//set InfoPojo.java in Adaptor
+
+package com.example.ashwinipalve.testapp.pojo;
+
+/**
+ * Created by Ashwini Palve on 23/01/2018.
+ */
+
+public class InfoPojo {
+
+    private String id;
+    private String filepath;
+    private String filetype;
+    private String title;
+
+    public InfoPojo(String id, String filepath, String filetype, String title) {
+        this.id = id;
+        this.filepath = filepath;
+        this.filetype = filetype;
+        this.title = title;
+    }
+
+    public String getId() {
+        return id;
+    }
+
+    public void setId(String id) {
+        this.id = id;
+    }
+
+    public String getFilepath() {
+        return filepath;
+    }
+
+    public void setFilepath(String filepath) {
+        this.filepath = filepath;
+    }
+
+    public String getFiletype() {
+        return filetype;
+    }
+
+    public void setFiletype(String filetype) {
+        this.filetype = filetype;
+    }
+
+    public String getTitle() {
+        return title;
+    }
+
+    public void setTitle(String title) {
+        this.title = title;
+    }
+}
+
+
+
+
+//InfoPojo1.java
+
+
+
+
+package com.example.ashwinipalve.testapp.pojo;
+
+import java.util.ArrayList;
+
+/**
+ * Created by Ashwini Palve on 23/01/2018.
+ */
+
+public class InfoPojo1 {
+
+
+    private  String response ;
+    InfoPojo[] data;
+
+    public String getResponse() {
+        return response;
+    }
+
+    public void setResponse(String response) {
+        this.response = response;
+    }
+
+    public InfoPojo[] getData() {
+        return data;
+    }
+
+    public void setData(InfoPojo[] data) {
+        this.data = data;
+    }
+}
+
+
+
+
+
+
+//InfoMainActivity.java
+
+
+
+package com.example.ashwinipalve.testapp.activity;
+
+import android.support.v7.app.AppCompatActivity;
+import android.os.Bundle;
+import android.util.Log;
+import android.widget.ListView;
+
+import com.example.ashwinipalve.testapp.R;
+import com.example.ashwinipalve.testapp.pojo.ActorPojo;
+import com.example.ashwinipalve.testapp.pojo.InfoPojo;
+import com.example.ashwinipalve.testapp.pojo.InfoPojo1;
+import com.google.gson.Gson;
+
+import java.util.ArrayList;
+
+public class InfoMainActivity extends AppCompatActivity {
+    ListView listView;
+    ArrayList<InfoPojo> arrayList;
+
+    private  String jsonString="{\n" +
+            "    \"response\": \"100\",\n" +
+            "    \"data\": [\n" +
+            "        {\n" +
+            "            \"id\": \"79\",\n" +
+            "            \"filepath\": \"uploads/photocollaboration-060240-ashok-sawant-murder-ani_650x400_51515387008.jpg\",\n" +
+            "            \"filetype\": \"1\",\n" +
+            "            \"title\": \"https://www.ndtv.com/mumbai-news/former-shiv-sena-corporator-ashok-sawant-hacked-to-death-in-mumbai-1797122?utm_source=taboola\"\n" +
+            "        },\n" +
+            "        {\n" +
+            "            \"id\": \"78\",\n" +
+            "            \"filepath\": \"uploads/photocollaboration-060154-yogi-adityanath-karnataka_650x400_61515331885.jpg\",\n" +
+            "            \"filetype\": \"1\",\n" +
+            "            \"title\": \"https://www.ndtv.com/india-news/to-siddaramaiahs-welcome-barb-yogi-adityanaths-stinging-comeback-1797046\"\n" +
+            "        }\n" +
+            "    ]\n" +
+            "}";
+
+    @Override
+    protected void onCreate(Bundle savedInstanceState)
+    {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_info_main);
+
+        Gson gson=new Gson();
+        InfoPojo1  pojo=gson.fromJson(jsonString,InfoPojo1.class);
+
+        arrayList=new ArrayList<>();
+
+        InfoPojo[] array=pojo.getData();
+        for(InfoPojo item  : array)
+        {
+            arrayList.add(item);
+            Log.d("Info",item.getFilepath());
+
+
+
+        }
+
+
+
+      //please dont do this becoz we are already creating the object in above so add arrayList in for Loop
+
+       /* InfoPojo infoPojo=new InfoPojo("id","filepath","filetype","title");
+        arrayList.add(infoPojo);*/
+
+
+        InfoAdaptor adaptor=new InfoAdaptor(this,arrayList);
+        listView=findViewById(R.id.list_item);
+        listView.setAdapter(adaptor);
+        adaptor.notifyDataSetChanged();
+
+    }
+}
+
+
+
+
+
+//here we take only one textView so it seting only one list
+
+
+
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android" android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+
+    <TextView
+        android:id="@+id/textView1"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Info"
+        android:textSize="20sp"
+        android:layout_centerVertical="true"
+        />
+
+</LinearLayout>
+
+

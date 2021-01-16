@@ -1,0 +1,383 @@
+//fetch the jsonArray or jsonObject from net
+//add dependances
+for gson:  compile 'com.google.code.gson:gson:2.8.2'
+for Volley:compile 'com.android.volley:volley:1.1.0'
+for Picasso:compile 'com.squareup.picasso:picasso:2.5.2'
+
+
+//INTERNET permissions we have to add into the android mainfestfile
+
+ //<uses-permission android:name="android.permission.INTERNET"></uses-permission>
+
+
+
+
+//Required Activites and Pojos
+ServiceDemoPojo.java
+ServiceDemoPojo1.java
+ServiceDemoActivity.java
+ServiceDemoAdaptor.java
+activity_service_Demo.xml(to set the listview)
+servicedemo.xml(to set the layout)
+
+
+//ServiceDemoPojo.java
+
+package com.example.ashwinipalve.testapp.pojo;
+
+/**
+ * Created by Ashwini Palve on 31/01/2018.
+ */
+
+public class ServiceDemoPojo
+{
+    private String frame_id;
+    private String frame_path;
+    private String frame_title;
+
+    public String getFrame_title() {
+        return frame_title;
+    }
+
+    public void setFrame_title(String frame_title) {
+        this.frame_title = frame_title;
+    }
+
+
+    public ServiceDemoPojo(String frame_id, String frame_path) {
+        this.frame_id = frame_id;
+        this.frame_path = frame_path;
+    }
+
+    public String getFrame_id() {
+        return frame_id;
+    }
+
+    public void setFrame_id(String frame_id) {
+        this.frame_id = frame_id;
+    }
+
+    public String getFrame_path() {
+        return frame_path;
+    }
+
+    public void setFrame_path(String frame_path) {
+        this.frame_path = frame_path;
+    }
+}
+
+
+
+
+//ServiceDemoPojo1.java
+
+
+package com.example.ashwinipalve.testapp.pojo;
+
+/**
+ * Created by Ashwini Palve on 31/01/2018.
+ */
+
+public class ServiceDemoPojo1
+{
+    private String response;
+    ServiceDemoPojo [] data;
+
+    public String getResponse() {
+        return response;
+    }
+
+    public void setResponse(String response) {
+        this.response = response;
+    }
+
+    public ServiceDemoPojo[] getData() {
+        return data;
+    }
+
+    public void setData(ServiceDemoPojo[] data) {
+        this.data = data;
+    }
+}
+
+
+
+//ServiceDemoAdaptor.java
+
+
+
+
+
+package com.example.ashwinipalve.testapp.activity;
+
+import android.app.Activity;
+import android.util.Base64;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.ViewGroup;
+import android.widget.BaseAdapter;
+import android.widget.ImageView;
+import android.widget.TextView;
+
+import com.example.ashwinipalve.testapp.R;
+import com.example.ashwinipalve.testapp.pojo.ServiceDemoPojo;
+import com.squareup.picasso.Picasso;
+
+import java.util.ArrayList;
+
+/**
+ * Created by Ashwini Palve on 01/02/2018.
+ */
+
+public class ServiceDemoAdapter extends BaseAdapter {
+
+    private final Activity context;
+    ArrayList<ServiceDemoPojo> arrayList;
+
+    public ServiceDemoAdapter(Activity context, ArrayList<ServiceDemoPojo> arrayList) {
+        this.context = context;
+        this.arrayList = arrayList;
+    }
+
+    public Activity getContext() {
+        return context;
+    }
+
+    public ArrayList<ServiceDemoPojo> getArrayList() {
+        return arrayList;
+    }
+
+    public void setArrayList(ArrayList<ServiceDemoPojo> arrayList) {
+        this.arrayList = arrayList;
+    }
+
+
+    @Override
+    public int getCount() {
+        return arrayList.size();
+    }
+
+
+    @Override
+    public Object getItem(int position) {
+        return position;
+    }
+
+
+    @Override
+    public long getItemId(int position) {
+        return position;
+    }
+
+
+    @Override
+    public View getView(int position, View view, ViewGroup viewGroup) {
+
+
+        LayoutInflater layoutInflater=LayoutInflater.from(context);
+        View rowView=layoutInflater.inflate(R.layout.servicedemoinfo,null);
+
+
+        /**  TextView textView=rowView.findViewById(R.id.textView1);
+        TextView textView1=rowView.findViewById(R.id.textView2);
+        TextView textView2=rowView.findViewById(R.id.textView3);
+
+
+        textView.setText(arrayList.get(position).getFrame_id());
+        textView1.setText(arrayList.get(position).getFrame_path());
+        textView2.setText(arrayList.get(position).getFrame_title());  ***/
+
+
+    ImageView imageView=rowView.findViewById(R.id.image_path);
+        TextView  textView=rowView.findViewById(R.id.text_title);
+
+        Picasso.with(context)
+                .load(arrayList.get(position).getFrame_path())
+               // .fit()
+                //.centerCrop()
+                .into(imageView);
+
+        //imageView.setImageResource(arrayList.get(position).getFrame_path());
+        textView.setText(arrayList.get(position).getFrame_title());
+
+
+
+        return rowView;
+    }
+}
+
+
+
+
+//ServiceDemoActivity.java
+
+
+
+package com.example.ashwinipalve.testapp.activity;
+
+import android.support.v7.app.AppCompatActivity;
+import android.os.Bundle;
+import android.util.Log;
+import android.view.View;
+import android.widget.AdapterView;
+import android.widget.ListView;
+import android.widget.Toast;
+
+import com.android.volley.Request;
+import com.android.volley.RequestQueue;
+import com.android.volley.Response;
+import com.android.volley.VolleyError;
+import com.android.volley.toolbox.JsonObjectRequest;
+import com.android.volley.toolbox.Volley;
+import com.example.ashwinipalve.testapp.R;
+import com.example.ashwinipalve.testapp.pojo.EmpInfoPojo;
+import com.example.ashwinipalve.testapp.pojo.ServiceDemoPojo;
+import com.example.ashwinipalve.testapp.pojo.ServiceDemoPojo1;
+import com.google.gson.Gson;
+
+import org.json.JSONObject;
+
+import java.util.ArrayList;
+
+public class ServiceDemoActivity extends AppCompatActivity {
+
+    ListView listView;
+    ArrayList<ServiceDemoPojo> arrayList;
+
+
+
+    private RequestQueue queue;
+
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_service_demo);
+
+
+        init();
+        makeCall();
+
+    }
+
+    private void init()
+    {
+        queue= Volley.newRequestQueue(this);
+    }
+
+    private void makeCall()
+    {
+        String url="http://narmware.com/kp/api/frame.php";
+        JsonObjectRequest jsObjRequest = new JsonObjectRequest
+                (Request.Method.GET, url, null, new Response.Listener<JSONObject>() {
+
+                    @Override
+                    public void onResponse(JSONObject response) {
+                        Log.d("Details", response.toString());
+
+
+                        Gson gson=new Gson();
+                        ServiceDemoPojo1 pojo1=gson.fromJson(response.toString(),ServiceDemoPojo1.class);
+                        arrayList=new ArrayList<>();
+
+                        final ServiceDemoPojo[] array=pojo1.getData();
+                        for(ServiceDemoPojo item:array)
+                        {
+                          arrayList.add(item);
+
+                          Log.d("Details",item.getFrame_id());
+                          Log.d("Details",item.getFrame_title());
+                        }
+
+                 ServiceDemoAdapter adapter=new ServiceDemoAdapter(ServiceDemoActivity.this,arrayList);
+                        listView=findViewById(R.id.list_item);
+                        listView.setAdapter(adapter);
+                        adapter.notifyDataSetChanged();
+                        listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+                            @Override
+                            public void onItemClick(AdapterView<?> adapterView, View view, int position, long id)
+                            {
+                                Toast.makeText(ServiceDemoActivity.this,"Id"+arrayList.get(position).getFrame_id(),Toast.LENGTH_SHORT).show();
+
+
+                            }
+                        });
+
+
+                    }
+                }, new Response.ErrorListener() {
+
+                    @Override
+                    public void onErrorResponse(VolleyError error) {
+                        // TODO Auto-generated method stub
+                        Log.d("Details", error.toString());
+                    }
+                });
+
+        queue.add(jsObjRequest);
+    }
+}
+
+
+
+
+
+
+//servicedemo.xml
+
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+
+
+
+
+        <ImageView
+            android:id="@+id/image_path"
+            android:layout_width="300dp"
+            android:layout_height="200dp"
+            android:layout_gravity="center"/>
+
+
+
+    <TextView
+        android:id="@+id/text_title"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="mTitle"
+        android:textSize="20sp"
+        android:layout_gravity="center"
+        >
+
+    </TextView>
+
+</LinearLayout>
+
+
+
+
+
+//activity_service_Demo.xml(to set the listview)
+
+
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context="com.example.ashwinipalve.testapp.activity.ServiceDemoActivity">
+
+    <ListView
+        android:id="@+id/list_item"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content">
+
+    </ListView>
+
+
+
+</LinearLayout>

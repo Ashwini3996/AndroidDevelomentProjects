@@ -1,0 +1,50 @@
+public class MainActivity extends AppCompatActivity {
+
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_main);
+    }
+
+    @Override
+    protected void onBackPressed() {
+        super.onBackPressed();
+        Toast.makeText(this, "Back pressed", Toast.LENGTH_LONG).show();
+    }
+
+//1.
+ @Override
+    protected void onBackPressed() {
+        Toast.makeText(this, "Back pressed", Toast.LENGTH_LONG).show();
+
+
+//2.
+
+Android onBackPressed: In the Activity, there is a method called onBackPressed which helps you to do some tasks when user presses the back button from your Activity. You can use the Android onBackPressed method only on the Activity and it must be overridden. You can easily do that in Android Studio with the help of shortcut keys. You can also disable back button press from the user using this method.
+Create Method:
+Click inside the class which extends Activity but outside method.
+Press Ctrl+O keys in keyboard
+Search for onBackPressed method
+Click 'Enter'
+That's all. Your onBackPressed method is created on the clicked position. The code looks like
+    @Override
+    protected void onBackPressed() {
+        super.onBackPressed();
+    }
+@override is an annotation used to mention that the method is an overrided method from base class Activity. 
+super.onBackPressed() is used to call an Android onBackPressed method written in Activity class. If you remove the statement then your Activity will not get closed.
+Example:
+Sample MainActivity.java code to demonstrate Android onBackPressed method.
+public class MainActivity extends AppCompatActivity {
+
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_main);
+    }
+
+    @Override
+    protected void onBackPressed() {
+        super.onBackPressed();
+        Toast.makeText(this, "Back pressed", Toast.LENGTH_LONG).show();
+    }

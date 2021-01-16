@@ -1,0 +1,125 @@
+How to realize ItemClick and LongItemClick Listeners.
+Firstly need to update build.gradle file for our project. Add one dependence:
+dependencies {
+    compile 'com.android.support:recyclerview-v7:22+'
+}
+After it, need to create an interface with prototype of onClick method.
+public interface ItemClickListener {
+    void onClick(View view, int position, boolean isLongClick);
+}
+Next step is creating layout for displaying some information use RecyclerView
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical" android:layout_width="match_parent"
+    android:layout_height="match_parent">
+    <TextView
+        android:id="@+id/textView"
+        android:textSize="22sp"
+        android:layout_marginRight="12dp"
+        android:layout_marginLeft="12dp"
+        android:layout_marginTop="8dp"
+        android:layout_marginBottom="8dp"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" />
+</LinearLayout>
+After it need to change main layout
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".MainActivity">
+    <android.support.v7.widget.RecyclerView
+        android:id="@+id/list"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:clipToPadding="false"
+        android:paddingBottom="80dp"
+        android:scrollbars="vertical"/>
+</RelativeLayout>
+Next step is creating an own adapter
+public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapter.ViewHolder> {
+    private Context mContext;
+    private String[] mList;
+    public RecyclerViewAdapter(Context contexts, String[] list) {
+        this.mContext = contexts;
+        this.mList = list;
+    }
+    @Override
+    public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+        LayoutInflater inflater = LayoutInflater.from(parent.getContext());
+        View itemView = inflater.inflate(R.layout.item, parent, false);
+        return new ViewHolder(itemView);
+    }
+    @Override
+    public void onBindViewHolder(ViewHolder holder, int position) {
+        holder.titleTextView.setText(mList[position]);
+        holder.setClickListener(new ItemClickListener() {
+            @Override
+            public void onClick(View view, int position, boolean isLongClick) {
+                if (isLongClick) {
+                    Toast.makeText(mContext, "#" + position + " - " + mList[position] + " (Long click)", Toast.LENGTH_SHORT).show();
+                } else {
+                    Toast.makeText(mContext, "#" + position + " - " + mList[position], Toast.LENGTH_SHORT).show();
+                }
+            }
+        });
+    }
+    @Override
+    public int getItemCount() {
+        return mList.length;
+    }
+    public static class ViewHolder extends RecyclerView.ViewHolder
+            implements View.OnClickListener, View.OnLongClickListener{
+        private TextView titleTextView;
+        private ItemClickListener clickListener;
+        public ViewHolder(View itemView) {
+            super(itemView);
+            titleTextView = (TextView)itemView.findViewById(R.id.textView);
+            itemView.setTag(itemView);
+            itemView.setOnClickListener(this);
+            itemView.setOnLongClickListener(this);
+        }
+        public void setClickListener(ItemClickListener itemClickListener) {
+            this.clickListener = itemClickListener;
+        }
+        @Override
+        public void onClick(View view) {
+            clickListener.onClick(view, getPosition(), false);
+        }
+        @Override
+        public boolean onLongClick(View view) {
+            clickListener.onClick(view, getPosition(), true);
+            return true;
+        }
+    }
+}
+Our list will display numbers, for it need add to arrays.xml next array:
+<string-array name="numbers">
+    <item>One</item>
+    <item>Two</item>
+    <item>Three</item>
+    <item>Four</item>
+    <item>Five</item>
+    <item>Six</item>
+    <item>Seven</item>
+    <item>Eight</item>
+</string-array>
+After it need to update main activity class:
+public class MainActivity extends ActionBarActivity {
+    private RecyclerView mRecyclerView;
+    private StaggeredGridLayoutManager mGridLayoutManager;
+    private RecyclerViewAdapter mAdapter;
+    private String[] mList;
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_main);
+        mList = getResources().getStringArray(R.array.numbers);
+        mRecyclerView = (RecyclerView) findViewById(R.id.list);
+        mGridLayoutManager = new StaggeredGridLayoutManager(1, StaggeredGridLayoutManager.VERTICAL);
+        mRecyclerView.setItemAnimator(new DefaultItemAnimator());
+        mRecyclerView.setLayoutManager(mGridLayoutManager);
+        mAdapter = new RecyclerViewAdapter(getApplicationContext(), mList);
+        mRecyclerView.setAdapter(mAdapter);
+    }
+}

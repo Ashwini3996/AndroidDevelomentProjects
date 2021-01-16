@@ -1,0 +1,186 @@
+//ListViewDemo3Activity.java
+
+
+package com.example.ashwinipalve.testapp.activity;
+
+import android.support.v7.app.AppCompatActivity;
+import android.os.Bundle;
+import android.widget.ListView;
+
+import com.example.ashwinipalve.testapp.R;
+import com.example.ashwinipalve.testapp.pojo.MyListViewPojo3;
+
+import java.util.ArrayList;
+
+public class ListViewDemo3Activity extends AppCompatActivity {
+
+    ListView listView;
+    ArrayList<MyListViewPojo3> arrayList;
+
+
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_list_view_demo3);
+
+
+        arrayList =new ArrayList<>();
+
+        MyListViewPojo3 item=new  MyListViewPojo3("Account",R.drawable.ic_account);
+        MyListViewPojo3 item1=new MyListViewPojo3("Chats",R.drawable.ic_message);
+        MyListViewPojo3 item2=new MyListViewPojo3("Notifications",R.drawable.ic_notifications);
+        MyListViewPojo3 item3=new MyListViewPojo3("DataUsage",R.drawable.ic_data_usage);
+        MyListViewPojo3 item4=new MyListViewPojo3("Contacts",R.drawable.ic_contacts);
+        MyListViewPojo3 item5=new MyListViewPojo3("Help",R.drawable.ic_help);
+
+        arrayList.add(item);
+        arrayList.add(item1);
+        arrayList.add(item2);
+        arrayList.add(item3);
+        arrayList.add(item4);
+        arrayList.add(item5);
+
+
+        MyListViewAdapter3 adapter3=new MyListViewAdapter3(this,arrayList);
+        listView=findViewById(R.id.list_item);
+        listView.setAdapter(adapter3);
+
+
+
+
+
+
+    }
+}
+
+
+
+//activity_list_view_demo3.xml
+
+
+    
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+ xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context="com.example.ashwinipalve.testapp.activity.ListViewDemo3Activity">
+
+
+    <ListView
+        android:id="@+id/list_item"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content">
+
+    </ListView>
+
+</LinearLayout>
+
+
+
+
+//programlist3.xml
+
+
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+
+    <ImageView
+        android:id="@+id/imageView1"
+        android:layout_width="30dp"
+        android:layout_height="30dp"
+        android:layout_centerVertical="true"
+        android:src="@drawable/logo1"/>
+
+    <TextView
+        android:id="@+id/textView1"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Name"
+        android:textSize="15sp"
+        android:layout_centerVertical="true"
+        android:layout_marginLeft="50dp"/>
+
+
+</RelativeLayout>
+
+
+//MyListViewAdaptor3.java
+
+
+package com.example.ashwinipalve.testapp.activity;
+
+import android.app.Activity;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.ViewGroup;
+import android.widget.BaseAdapter;
+import android.widget.ImageView;
+import android.widget.TextView;
+
+import com.example.ashwinipalve.testapp.R;
+import com.example.ashwinipalve.testapp.pojo.MyListViewPojo3;
+
+import java.util.ArrayList;
+
+/**
+ * Created by Ashwini Palve on 20/01/2018.
+ */
+
+
+
+
+public class MyListViewAdapter3 extends BaseAdapter{
+
+
+
+    private final Activity context;
+    ArrayList<MyListViewPojo3> arrayList;
+
+
+    public MyListViewAdapter3(Activity context, ArrayList<MyListViewPojo3> arrayList)
+    {
+        this.context=context;
+        this.arrayList=arrayList;
+    }
+
+
+    @Override
+    public int getCount() {
+        return arrayList.size();
+    }
+
+
+    @Override
+    public Object getItem(int position) {
+        return position;
+    }
+
+
+    @Override
+    public long getItemId(int position) {
+        return position;
+    }
+
+
+    @Override
+    public View getView(int position, View view, ViewGroup viewGroup) {
+
+        LayoutInflater layoutInflater=LayoutInflater.from(context);
+        View rowView=layoutInflater.inflate(R.layout.programlist3,null);
+
+        TextView textView=rowView.findViewById(R.id.textView1);
+        ImageView imageView=rowView.findViewById(R.id.imageView1);
+
+        textView.setText(arrayList.get(position).getTextView1());
+        imageView.setImageResource(arrayList.get(position).getImageView1());
+
+        return rowView;
+    }
+}

@@ -1,0 +1,272 @@
+//toJson oject conversion
+
+
+//activity_list_view_demo3.xml
+
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+ xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context="com.example.ashwinipalve.testapp.activity.ListViewDemo3Activity">
+
+
+    <ListView
+        android:id="@+id/list_item"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content">
+
+    </ListView>
+
+</LinearLayout>
+
+
+
+
+
+
+
+//programlist3.java
+
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+
+    <ImageView
+        android:id="@+id/imageView1"
+        android:layout_width="30dp"
+        android:layout_height="30dp"
+        android:layout_centerVertical="true"
+        android:src="@drawable/logo1"/>
+
+    <TextView
+        android:id="@+id/textView1"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Name"
+        android:textSize="15sp"
+        android:layout_centerVertical="true"
+        android:layout_marginLeft="50dp"/>
+
+
+</RelativeLayout>
+
+
+
+//MyListViewPojo.java
+
+
+package com.example.ashwinipalve.testapp.pojo;
+
+/**
+ * Created by Ashwini Palve on 20/01/2018.
+ */
+
+public class MyListViewPojo3 {
+
+    private String textView1;
+    private  int imageView1;
+
+
+    public MyListViewPojo3(String textView1,int imageView1)
+    {
+        this.textView1=textView1;
+        this.imageView1=imageView1;
+    }
+
+
+    public String getTextView1() {
+        return textView1;
+    }
+
+    public void setTextView1(String textView1) {
+        this.textView1 = textView1;
+    }
+
+    public int getImageView1() {
+        return imageView1;
+    }
+
+    public void setImageView1(int imageView1) {
+        this.imageView1 = imageView1;
+    }
+
+
+}
+
+
+
+//ListViewDemo3Activity.java
+
+
+package com.example.ashwinipalve.testapp.activity;
+
+import android.support.v7.app.AppCompatActivity;
+import android.os.Bundle;
+import android.util.Log;
+import android.widget.ListView;
+
+import com.example.ashwinipalve.testapp.R;
+import com.example.ashwinipalve.testapp.pojo.CredPojo;
+import com.example.ashwinipalve.testapp.pojo.MyListViewPojo3;
+import com.google.gson.Gson;
+
+import java.util.ArrayList;
+
+public class ListViewDemo3Activity extends AppCompatActivity {
+
+    ListView listView;
+    ArrayList<MyListViewPojo3> arrayList;
+
+
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_list_view_demo3);
+
+
+        arrayList =new ArrayList<>();
+
+        MyListViewPojo3 item=new  MyListViewPojo3("Account",R.drawable.ic_account);
+        MyListViewPojo3 item1=new MyListViewPojo3("Chats",R.drawable.ic_message);
+        MyListViewPojo3 item2=new MyListViewPojo3("Notifications",R.drawable.ic_notifications);
+        MyListViewPojo3 item3=new MyListViewPojo3("DataUsage",R.drawable.ic_data_usage);
+        MyListViewPojo3 item4=new MyListViewPojo3("Contacts",R.drawable.ic_contacts);
+        MyListViewPojo3 item5=new MyListViewPojo3("Help",R.drawable.ic_help);
+
+        arrayList.add(item);
+        arrayList.add(item1);
+        arrayList.add(item2);
+        arrayList.add(item3);
+        arrayList.add(item4);
+        arrayList.add(item5);
+
+
+        Gson gson=new Gson();
+        String json=gson.toJson(arrayList);
+        Log.d("json",json);
+
+
+        MyListViewAdapter3 adapter3=new MyListViewAdapter3(this,arrayList);
+        listView=findViewById(R.id.list_item);
+        listView.setAdapter(adapter3);
+    }
+}
+
+
+
+
+
+
+
+
+
+
+
+//outputOf following program is:
+"[{\"imageView1\":2131099733,\"textView1\":\"Account\"},{\"imageView1\":2131099743,\"textView1\":\"Chats\"},{\"imageView1\":2131099745,\"textView1\":\"Notifications\"},{\"imageView1\":2131099735,\"textView1\":\"DataUsage\"},{\"imageView1\":2131099734,\"textView1\":\"Contacts\"},{\"imageView1\":2131099737,\"textView1\":\"Help\"}]";
+
+
+
+
+
+//now this json object Convert into the json String for that create one more pojo to define the fildes
+
+
+
+//ActorPojo.java
+
+
+package com.example.ashwinipalve.testapp.pojo;
+
+/**
+ * Created by Ashwini Palve on 23/01/2018.
+ */
+
+public class ActorPojo {
+
+    private String textView1;
+    private String imageView1;
+
+    public ActorPojo(String textView1, String imageView1) {
+        this.textView1 = textView1;
+        this.imageView1 = imageView1;
+    }
+
+    public String getTextView1() {
+        return textView1;
+    }
+
+    public void setTextView1(String textView1) {
+        this.textView1 = textView1;
+    }
+
+    public String getImageView1() {
+        return imageView1;
+    }
+
+    public void setImageView1(String imageView1) {
+        this.imageView1 = imageView1;
+    }
+
+}
+
+
+
+//ActorActivity.java
+
+
+package com.example.ashwinipalve.testapp.activity;
+
+import android.support.v7.app.AppCompatActivity;
+import android.os.Bundle;
+import android.util.Log;
+
+import com.example.ashwinipalve.testapp.R;
+import com.example.ashwinipalve.testapp.pojo.ActorPojo;
+import com.example.ashwinipalve.testapp.pojo.ActorPojo1;
+import com.example.ashwinipalve.testapp.pojo.CredPojo;
+import com.example.ashwinipalve.testapp.pojo.MyListViewPojo3;
+import com.google.common.reflect.TypeToken;
+import com.google.gson.Gson;
+
+import org.json.JSONArray;
+import org.json.JSONObject;
+
+import java.lang.reflect.Type;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.List;
+
+public class ActorActivity extends AppCompatActivity {
+
+
+    private String jsonString = "[{\"imageView1\":2131099733,\"textView1\":\"Account\"},{\"imageView1\":2131099743,\"textView1\":\"Chats\"},{\"imageView1\":2131099745,\"textView1\":\"Notifications\"},{\"imageView1\":2131099735,\"textView1\":\"DataUsage\"},{\"imageView1\":2131099734,\"textView1\":\"Contacts\"},{\"imageView1\":2131099737,\"textView1\":\"Help\"}]";
+
+
+
+
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_actor);
+
+
+        Gson gson=new Gson();
+
+        ActorPojo[] pojo1=gson.fromJson(jsonString,ActorPojo[].class);
+
+
+         for(ActorPojo item  : pojo1)
+         {
+             Log.d("ActorDetails",item.getTextView1());
+         }
+    }
+}
+

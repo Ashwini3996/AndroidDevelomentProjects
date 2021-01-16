@@ -1,0 +1,278 @@
+//snippet fetches a JSON feed and displays it as text in the UI:
+//Making a standard Request
+
+
+
+Making a Standard Request
+PreviousNext
+This lesson teaches you to
+Request JSON
+VIDEO
+Volley: Easy, Fast Networking for Android
+
+This lesson describes how to use the common request types that Volley supports:
+StringRequest. Specify a URL and receive a raw string in response. See Setting Up a Request Queue for an example.
+JsonObjectRequest and JsonArrayRequest (both subclasses of JsonRequest). Specify a URL and get a JSON object or array (respectively) in response.
+If your expected response is one of these types, you probably don't have to implement a custom request. This lesson describes how to use these standard request types. For information on how to implement your own custom request, see Implementing a Custom Request.
+
+
+
+Request JSON
+Volley provides the following classes for JSON requests:
+
+JsonArrayRequest—A request for retrieving a JSONArray response body at a given URL.
+JsonObjectRequest—A request for retrieving a JSONObject response body at a given URL, allowing for an optional JSONObject to be passed in as part of the request body.
+
+
+
+
+
+TextView mTxtDisplay;
+ImageView mImageView;
+mTxtDisplay = (TextView) findViewById(R.id.txtDisplay);
+String url = "http://my-json-feed";
+
+JsonObjectRequest jsObjRequest = new JsonObjectRequest
+        (Request.Method.GET, url, null, new Response.Listener<JSONObject>() {
+
+    @Override
+    public void onResponse(JSONObject response) {
+        mTxtDisplay.setText("Response: " + response.toString());
+    }
+}, new Response.ErrorListener() {
+
+    @Override
+    public void onErrorResponse(VolleyError error) {
+        // TODO Auto-generated method stub
+
+    }
+});
+
+// Access the RequestQueue through your singleton class.
+MySingleton.getInstance(this).addToRequestQueue(jsObjRequest);
+
+
+
+//
+Sending a Simple Request
+PreviousNext
+This lesson teaches you to
+Add the INTERNET Permission
+Use newRequestQueue
+Send a Request
+Cancel a Request
+VIDEO
+Volley: Easy, Fast Networking for Android
+
+
+
+
+
+
+
+At a high level, you use Volley by creating a RequestQueue and passing it Request objects. The RequestQueue manages worker threads for running the network operations, reading from and writing to the cache, and parsing responses. Requests do the parsing of raw responses and Volley takes care of dispatching the parsed response back to the main thread for delivery.
+
+This lesson describes how to send a request using the Volley.newRequestQueue convenience method, which sets up a RequestQueue for you. See the next lesson, Setting Up a RequestQueue, for information on how to set up a RequestQueue yourself.
+
+This lesson also describes how to add a request to a RequestQueue and cancel a request.
+
+Add the INTERNET Permission
+To use Volley, you must add the android.permission.INTERNET permission to your app's manifest. Without this, your app won't be able to connect to the network.
+
+
+
+Use newRequestQueue
+Volley provides a convenience method Volley.newRequestQueue that sets up a RequestQueue for you, using default values, and starts the queue. For example:
+
+final TextView mTextView = (TextView) findViewById(R.id.text);
+...
+
+
+
+
+// Instantiate the RequestQueue.
+RequestQueue queue = Volley.newRequestQueue(this);
+String url ="http://www.google.com";
+
+// Request a string response from the provided URL.
+StringRequest stringRequest = new StringRequest(Request.Method.GET, url,
+            new Response.Listener<String>() {
+    @Override
+    public void onResponse(String response) {
+        // Display the first 500 characters of the response string.
+        mTextView.setText("Response is: "+ response.substring(0,500));
+    }
+}, new Response.ErrorListener() {
+    @Override
+    public void onErrorResponse(VolleyError error) {
+        mTextView.setText("That didn't work!");
+    }
+});
+
+
+// Add the request to the RequestQueue.
+queue.add(stringRequest);
+
+
+
+
+Volley always delivers parsed responses on the main thread. Running on the main thread is convenient for populating UI controls with received data, as you can freely modify UI controls directly from your response handler, but it's especially critical to many of the important semantics provided by the library, particularly related to canceling requests.
+
+See Setting Up a RequestQueue for a description of how to set up a RequestQueue yourself, instead of using the Volley.newRequestQueue convenience method.
+
+
+
+
+
+
+
+
+//
+
+
+
+Setting Up a RequestQueue
+PreviousNext
+This lesson teaches you to
+Set Up a Network and Cache
+Use a Singleton Pattern
+VIDEO
+Volley: Easy, Fast Networking for Android
+
+The previous lesson showed you how to use the convenience method Volley.newRequestQueue to set up a RequestQueue, taking advantage of Volley's default behaviors. This lesson walks you through the explicit steps of creating a RequestQueue, to allow you to supply your own custom behavior.
+
+This lesson also describes the recommended practice of creating a RequestQueue as a singleton, which makes the RequestQueue last the lifetime of your app.
+
+Set Up a Network and Cache
+A RequestQueue needs two things to do its job: a network to perform transport of the requests, and a cache to handle caching. There are standard implementations of these available in the Volley toolbox: DiskBasedCache provides a one-file-per-response cache with an in-memory index, and BasicNetwork provides a network transport based on your preferred HTTP client.
+
+BasicNetwork is Volley's default network implementation. A BasicNetwork must be initialized with the HTTP client your app is using to connect to the network. Typically this is an HttpURLConnection.
+
+This snippet shows you the steps involved in setting up a RequestQueue:
+
+
+
+
+
+RequestQueue mRequestQueue;
+
+// Instantiate the cache
+Cache cache = new DiskBasedCache(getCacheDir(), 1024 * 1024); // 1MB cap
+
+// Set up the network to use HttpURLConnection as the HTTP client.
+Network network = new BasicNetwork(new HurlStack());
+
+// Instantiate the RequestQueue with the cache and network.
+mRequestQueue = new RequestQueue(cache, network);
+
+// Start the queue
+mRequestQueue.start();
+
+String url ="http://www.example.com";
+
+// Formulate the request and handle the response.
+StringRequest stringRequest = new StringRequest(Request.Method.GET, url,
+        new Response.Listener<String>() {
+    @Override
+    public void onResponse(String response) {
+        // Do something with the response
+    }
+},
+    new Response.ErrorListener() {
+        @Override
+        public void onErrorResponse(VolleyError error) {
+            // Handle error
+    }
+});
+
+
+
+
+// Add the request to the RequestQueue.
+mRequestQueue.add(stringRequest);
+
+// ...
+If you just need to make a one-time request and don't want to leave the thread pool around, you can create the RequestQueue wherever you need it and call stop() on the RequestQueue once your response or error has come back, using the Volley.newRequestQueue() method described in Sending a Simple Request. But the more common use case is to create the RequestQueue as a singleton to keep it running for the lifetime of your app, as described in the next section.
+
+Use a Singleton Pattern
+If your application makes constant use of the network, it's probably most efficient to set up a single instance of RequestQueue that will last the lifetime of your app. You can achieve this in various ways. The recommended approach is to implement a singleton class that encapsulates RequestQueue and other Volley functionality. Another approach is to subclass Application and set up the RequestQueue in Application.onCreate(). But this approach is discouraged; a static singleton can provide the same functionality in a more modular way.
+
+A key concept is that the RequestQueue must be instantiated with the Application context, not an Activity context. This ensures that the RequestQueue will last for the lifetime of your app, instead of being recreated every time the activity is recreated (for example, when the user rotates the device).
+
+
+
+
+
+
+
+Here is an example of a singleton class that provides RequestQueue and ImageLoader functionality:
+
+
+public class MySingleton {
+    private static MySingleton mInstance;
+    private RequestQueue mRequestQueue;
+    private ImageLoader mImageLoader;
+    private static Context mCtx;
+
+    private MySingleton(Context context) {
+        mCtx = context;
+        mRequestQueue = getRequestQueue();
+
+        mImageLoader = new ImageLoader(mRequestQueue,
+                new ImageLoader.ImageCache() {
+            private final LruCache<String, Bitmap>
+                    cache = new LruCache<String, Bitmap>(20);
+
+            @Override
+            public Bitmap getBitmap(String url) {
+                return cache.get(url);
+            }
+
+            @Override
+            public void putBitmap(String url, Bitmap bitmap) {
+                cache.put(url, bitmap);
+            }
+        });
+    }
+
+    public static synchronized MySingleton getInstance(Context context) {
+        if (mInstance == null) {
+            mInstance = new MySingleton(context);
+        }
+        return mInstance;
+    }
+
+    public RequestQueue getRequestQueue() {
+        if (mRequestQueue == null) {
+            // getApplicationContext() is key, it keeps you from leaking the
+            // Activity or BroadcastReceiver if someone passes one in.
+            mRequestQueue = Volley.newRequestQueue(mCtx.getApplicationContext());
+        }
+        return mRequestQueue;
+    }
+
+    public <T> void addToRequestQueue(Request<T> req) {
+        getRequestQueue().add(req);
+    }
+
+    public ImageLoader getImageLoader() {
+        return mImageLoader;
+    }
+}
+
+
+
+
+
+
+Here are some examples of performing RequestQueue operations using the singleton class:
+
+// Get a RequestQueue
+RequestQueue queue = MySingleton.getInstance(this.getApplicationContext()).
+    getRequestQueue();
+
+// ...
+
+// Add a request (in this example, called stringRequest) to your RequestQueue.
+MySingleton.getInstance(this).addToRequestQueue(stringRequest);
+PreviousSending a Simple Request Next

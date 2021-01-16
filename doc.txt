@@ -1,0 +1,9 @@
+                 INPUT AND OUTPUT SCREEN
+       
+USER SPECIFICATION: The proposed system is physically developed in this stage user specification or output specification provides the proposed system goals.
+ User specification stage fulfilled the user need by preparing building blocks of the system user specification are developed by based on output design. It provides total outlook of the system and offer various features for user after going to http://onlineshopee.co.in/news user can see the view.
+ADMIN SPECIFICATION: This is the Input panel of the online News Portal this panel is automatically provided by the Wordpress.org By using this panel we can dynamically control online news portal. 
+It is fully secured system without being admin or knowing user name and password no one can access it is fully protected from unauthorized access after going to http://onlineshopee.co.in/news/wp-admin.
+Here we have used Wordpress (CMS) devolved dynamic, responsive website like online news website.
+After giving the valid username and password then admin have to click login button then admin show the below view Here Admin can add Editors, can add/update/delete news can add various categories, can used various plugins as per the requirements. 
+

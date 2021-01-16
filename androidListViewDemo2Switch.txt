@@ -1,0 +1,275 @@
+//coustom adapter with extra textView and ImageView and Switch button
+  
+
+
+
+//ListViewDemo2Activity.java
+
+
+package com.example.ashwinipalve.testapp.activity;
+
+import android.content.Context;
+import android.support.v7.app.AppCompatActivity;
+import android.os.Bundle;
+import android.view.View;
+import android.widget.AdapterView;
+import android.widget.ListView;
+import android.widget.Switch;
+import android.widget.Toast;
+
+import com.example.ashwinipalve.testapp.R;
+import com.example.ashwinipalve.testapp.pojo.MyListViewPojo;
+
+import java.util.ArrayList;
+
+public class ListViewDemo2Activity extends AppCompatActivity {
+
+    Context context;
+    ListView listView;
+    ArrayList<MyListViewPojo> arrayList;
+
+   /* public static int [] mImages ={R.drawable.logo1,R.drawable.logo2,R.drawable.logo3,R.drawable.logo4};
+    public static String[] mArray={"Mac","Windows","Linux","Android"};
+*/
+
+
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.list_view_demo2);
+
+
+        arrayList=new ArrayList<>();
+
+        MyListViewPojo item=new MyListViewPojo("Mac",R.drawable.logo1);
+        MyListViewPojo item1=new MyListViewPojo("Windows",R.drawable.logo2);
+        MyListViewPojo item2=new MyListViewPojo("Linux",R.drawable.logo3);
+        MyListViewPojo item3=new MyListViewPojo("Android",R.drawable.logo4);
+
+
+
+        arrayList.add(item);
+        arrayList.add(item1);
+       arrayList.add(item2);
+       arrayList.add(item3);
+
+
+        MyListViewAdapter adapter=new MyListViewAdapter(this ,arrayList);
+        listView =  findViewById(R.id.list_item);
+        listView.setAdapter(adapter);
+
+
+    }
+}
+
+
+
+//list_view_demo2.xml
+
+
+
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context="com.example.ashwinipalve.testapp.activity.ListViewActivity">
+    <ListView
+        android:id="@+id/list_item"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content">
+
+    </ListView>
+</LinearLayout>
+
+
+
+
+//MyListViewAdapter.java
+
+
+package com.example.ashwinipalve.testapp.activity;
+
+import android.app.Activity;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.ViewGroup;
+import android.widget.BaseAdapter;
+import android.widget.CompoundButton;
+import android.widget.ImageView;
+import android.widget.Switch;
+import android.widget.TextView;
+import android.widget.Toast;
+
+import com.example.ashwinipalve.testapp.R;
+import com.example.ashwinipalve.testapp.pojo.MyListViewPojo;
+
+import java.util.ArrayList;
+
+/*
+import static com.example.ashwinipalve.testapp.activity.ListViewDemo2Activity.mArray;
+*/
+
+/**
+ * Created by Ashwini Palve on 16/01/2018.
+ */
+
+public class MyListViewAdapter extends BaseAdapter
+{
+
+    private final Activity context;
+   /* private final String[] mArray;
+    private final int[]  mImages;*/
+
+   ArrayList<MyListViewPojo> arrayList;
+
+
+    public MyListViewAdapter(Activity context,ArrayList<MyListViewPojo> arrayList )
+    {
+        this.context = context;
+        this.arrayList = arrayList;
+
+    }
+
+
+    @Override
+    public int getCount() {
+        return arrayList.size();
+    }
+
+
+    @Override
+    public Object getItem(int position) {
+        return position;
+    }
+
+
+    @Override
+    public long getItemId(int position) {
+        return position;
+
+    }
+
+
+    @Override
+    public View getView(int position, View view, ViewGroup viewGroup) {
+
+        LayoutInflater inflater=LayoutInflater.from(context);
+        View rowView=inflater.inflate(R.layout.programlist1,null);
+        TextView textView=rowView.findViewById(R.id.textView1);
+        ImageView imageView=rowView.findViewById(R.id.imageView1);
+
+        final Switch simpleswitch=rowView.findViewById(R.id.switch1);
+        simpleswitch.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            String statusSwitch;
+            @Override
+            public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
+                if (simpleswitch.isChecked())
+                    statusSwitch =simpleswitch.getTextOn().toString();
+                else
+                    statusSwitch = simpleswitch.getTextOff().toString();
+                Toast.makeText(context, "Switch :" + statusSwitch , Toast.LENGTH_LONG).show(); // display the current state for switch's
+
+
+
+            }
+        });
+
+
+        textView.setText(arrayList.get(position).getTextView1());
+        imageView.setImageResource(arrayList.get(position).getImageView1());
+
+
+
+        return  rowView;
+    }
+}
+
+
+
+
+//to add more imageView TextView and switch Button into the listView 
+//programList1.xml
+
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    android:orientation="horizontal"
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context="com.example.ashwinipalve.testapp.activity.ListViewDemo2Activity">
+
+    <ImageView
+        android:id="@+id/imageView1"
+        android:layout_gravity="center"
+        android:layout_width="50dp"
+        android:layout_height="50dp"
+        android:src="@drawable/logo1"
+        />
+
+
+    <TextView
+        android:id="@+id/textView1"
+        android:layout_gravity="center"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textSize="20dp"
+        android:text="Name" />
+
+
+    <Switch
+        android:id="@+id/switch1"
+        android:layout_width="50dp"
+        android:layout_height="wrap_content"
+        android:layout_gravity="right|center_vertical"
+        android:checked="true"
+        android:textOff="OFF"
+        android:textOn="ON"
+        />
+
+    </LinearLayout>
+
+
+
+
+//without taking array take ArrayList<> And add the name of your pojo in this case ArrayList<MyListViewPojo> arraylist;
+
+
+package com.example.ashwinipalve.testapp.pojo;
+
+/**
+ * Created by Ashwini Palve on 17/01/2018.
+ */
+
+public class MyListViewPojo {
+
+    private String textView1;
+    private int imageView1;
+
+    public MyListViewPojo(String textView1, int imageView1) {
+        this.textView1 = textView1;
+        this.imageView1 = imageView1;
+    }
+
+    public String getTextView1() {
+        return textView1;
+    }
+
+    public void setTextView1(String textView1) {
+        this.textView1 = textView1;
+    }
+
+
+    public int getImageView1() {
+        return imageView1;
+    }
+
+    public void setImageView1(int imageView1) {
+        this.imageView1 = imageView1;
+    }
+}
+  
